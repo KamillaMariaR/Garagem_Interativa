@@ -1,124 +1,71 @@
-// server.js
+// server.js (VERSÃO FINAL E COMPLETA GARANTIDA)
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 3000; // Mantendo a porta 3000 que você já usa
+const PORT = process.env.PORT || 3000;
 const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY_BACKEND;
 
-// Middleware para habilitar CORS
+// Middlewares essenciais
 app.use(cors());
-// Middleware para parsear JSON
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")))
 
 // ====================================================================
-// ===== NOVOS DADOS PARA A AULA 1 (Dicas de Manutenção) ==========
+// ===== DADOS MOCK (Simulação de Banco de Dados) ===================
 // ====================================================================
-
-// Dados fixos para simular um banco de dados
 const dicasManutencaoGerais = [
     { id: 1, dica: "Verifique o nível do óleo do motor regularmente." },
     { id: 2, dica: "Calibre os pneus semanalmente para maior segurança e economia." },
-    { id: 3, dica: "Confira o fluido de arrefecimento (radiador) com o motor frio." },
-    { id: 4, dica: "Teste os freios e fique atento a qualquer ruído estranho." },
-    { id: 5, dica: "Verifique o funcionamento de todas as luzes do veículo." }
+    { id: 3, dica: "Confira o fluido de arrefecimento (radiador) com o motor frio." }
+];
+const dicasPorTipo = {
+    carro: [{ id: 10, dica: "Faça o rodízio dos pneus a cada 10.000 km." }],
+    moto: [{ id: 20, dica: "Lubrifique e verifique a tensão da corrente frequentemente." }],
+    caminhao: [{ id: 30, dica: "Verifique o sistema de freios a ar e drene os reservatórios." }]
+};
+const veiculosDestaque = [
+    { id: 10, modelo: "Mustang Mach-E", ano: 2024, destaque: "Performance Elétrica Icônica", imagemUrl: "https://www.ford.com/is/image/content/dam/vdm_ford/live/en_us/ford/nameplate/mustang-mach-e/2023/collections/dm/23_FRD_MME_52523.tif?croppathe=1_3x2&wid=720" },
+    { id: 11, modelo: "Cybertruck", ano: 2024, destaque: "O Futuro da Resistência", imagemUrl: "https://digitalassets.tesla.com/tesla-contents/image/upload/f_auto,q_auto/Cybertruck-Main-Hero-Desktop-LHD.jpg" }
+];
+const servicosGaragem = [
+    { id: "svc001", nome: "Diagnóstico Eletrônico Completo", descricao: "Verificação de todos os sistemas eletrônicos.", precoEstimado: "R$ 250,00" },
+    { id: "svc002", nome: "Alinhamento e Balanceamento 3D", descricao: "Para uma direção perfeita e maior durabilidade dos pneus.", precoEstimado: "R$ 180,00" }
+];
+const viagensPopulares = [
+    { id: 1, destino: "Viagem na Serra", pais: "Brasil", descricao: "Curta o frio e as belas paisagens com seu melhor veículo.", imagemUrl: "imagens/civic-removebg-preview.png" },
+    { id: 2, destino: "Passeio Esportivo", pais: "Mônaco", descricao: "Sinta a velocidade em estradas sinuosas com um superesportivo.", imagemUrl: "imagens/paganiRosa-removebg-preview.png" }
 ];
 
-const dicasPorTipo = {
-    carro: [
-        { id: 10, dica: "Faça o rodízio dos pneus a cada 10.000 km para um desgaste uniforme." },
-        { id: 11, dica: "Verifique o alinhamento e balanceamento a cada 6 meses." }
-    ],
-    moto: [
-        { id: 20, dica: "Lubrifique e verifique a tensão da corrente frequentemente." },
-        { id: 21, dica: "Inspecione as pastilhas de freio e o nível do fluido de freio." }
-    ],
-    caminhao: [
-        { id: 30, dica: "Verifique o sistema de freios a ar e drene os reservatórios." },
-        { id: 31, dica: "Inspecione o estado dos pneus e a pressão, especialmente sob carga." }
-    ]
-};
-
 // ====================================================================
-// ===== NOVAS ROTAS DA AULA 1 (Dicas de Manutenção) ================
+// ===== ROTAS DA API ===============================================
 // ====================================================================
-
-// Endpoint para retornar todas as dicas de manutenção gerais
-app.get('/api/dicas-manutencao', (req, res) => {
-    console.log('[Servidor] Requisição recebida para /api/dicas-manutencao');
-    res.json(dicasManutencaoGerais);
-});
-
-// Endpoint para retornar dicas por tipo de veículo
+app.get('/api/dicas-manutencao', (req, res) => res.json(dicasManutencaoGerais));
 app.get('/api/dicas-manutencao/:tipoVeiculo', (req, res) => {
-    const { tipoVeiculo } = req.params;
-    console.log(`[Servidor] Requisição recebida para /api/dicas-manutencao/${tipoVeiculo}`);
-    
-    // Converte o parâmetro para minúsculas para corresponder às chaves do objeto
-    const dicas = dicasPorTipo[tipoVeiculo.toLowerCase()];
-
-    if (dicas) {
-        res.json(dicas);
-    } else {
-        res.status(404).json({ error: `Nenhuma dica encontrada para o tipo: ${tipoVeiculo}` });
-    }
+    const dicas = dicasPorTipo[req.params.tipoVeiculo.toLowerCase()];
+    dicas ? res.json(dicas) : res.status(404).json({ error: `Nenhuma dica encontrada` });
 });
+app.get('/api/garagem/veiculos-destaque', (req, res) => res.json(veiculosDestaque));
+app.get('/api/garagem/servicos-oferecidos', (req, res) => res.json(servicosGaragem));
+app.get('/api/viagens-populares', (req, res) => res.json(viagensPopulares));
 
-
-// ====================================================================
-// ===== ROTA EXISTENTE (Previsão do Tempo) ===========================
-// ====================================================================
 app.get('/clima', async (req, res) => {
     const { cidade } = req.query;
-
-    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY.length < 30) {
-        console.error('Chave da API OpenWeatherMap não configurada ou inválida no servidor.');
-        return res.status(500).json({ message: 'Erro de configuração do servidor: Chave da API ausente ou inválida.' });
-    }
-    if (!cidade) {
-        return res.status(400).json({ message: 'O parâmetro "cidade" é obrigatório.' });
-    }
-
-    const openWeatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(cidade)}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
-
+    if (!OPENWEATHER_API_KEY) return res.status(500).json({ message: 'Erro de configuração do servidor.' });
+    if (!cidade) return res.status(400).json({ message: 'O parâmetro "cidade" é obrigatório.' });
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${cidade}&appid=${OPENWEATHER_API_KEY}&units=metric&lang=pt_br`;
     try {
-        console.log(`Backend: Recebida requisição para cidade: ${cidade}`);
-        const response = await axios.get(openWeatherUrl);
+        const response = await axios.get(url);
         res.json(response.data);
-        console.log(`Backend: Resposta da OpenWeatherMap enviada para o cliente para cidade: ${cidade}`);
-
     } catch (error) {
-        console.error('Backend: Erro ao buscar dados do OpenWeatherMap:');
-        if (error.response) {
-            console.error(' - Status:', error.response.status);
-            console.error(' - Data:', error.response.data);
-            res.status(error.response.status).json({
-                message: error.response.data.message || 'Erro ao contatar o serviço de clima externo.',
-                details: error.response.data
-            });
-        } else if (error.request) {
-            console.error(' - Error Request:', error.request);
-            res.status(503).json({ message: 'Serviço de clima externo indisponível ou não respondeu.' });
-        } else {
-            console.error(' - Error Message:', error.message);
-            res.status(500).json({ message: 'Erro interno no servidor ao processar a requisição de clima.' });
-        }
+        res.status(error.response?.status || 500).json({ message: error.response?.data?.message || 'Erro' });
     }
 });
 
-// Inicia o servidor
+// ====================================================================
+// ===== INICIALIZAÇÃO DO SERVIDOR ====================================
+// ====================================================================
 app.listen(PORT, () => {
-    console.log(`Servidor backend da Garagem Inteligente rodando na porta ${PORT}`);
-    if (!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY.length < 30) {
-        console.warn('-----------------------------------------------------------------------------');
-        console.warn('ATENÇÃO: A variável de ambiente OPENWEATHER_API_KEY_BACKEND não está configurada');
-        console.warn('corretamente no arquivo .env. O endpoint de clima NÃO FUNCIONARÁ.');
-        console.warn('Verifique se o arquivo .env existe e contém a chave correta.');
-        console.warn('-----------------------------------------------------------------------------');
-    } else {
-        console.log('Chave da API OpenWeatherMap carregada com sucesso do .env.');
-    }
+    console.log(`🚀 Servidor backend da Garagem Inteligente rodando na porta ${PORT}`);
 });
