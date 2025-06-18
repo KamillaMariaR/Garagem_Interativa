@@ -13,6 +13,18 @@
     <main>
         <h1>Garagem Interativa</h1>
 
+        <!-- NOVAS SEÇÕES ADICIONADAS AQUI -->
+        <section id="secao-veiculos-destaque" class="container">
+            <h2>Veículos em Destaque na Garagem</h2>
+            <div id="cards-veiculos-destaque" class="cards-container"></div>
+        </section>
+        
+        <section id="secao-servicos" class="container">
+            <h2>Nossos Serviços</h2>
+            <ul id="lista-servicos-oferecidos"></ul>
+        </section>
+        <!-- FIM DAS NOVAS SEÇÕES -->
+
         <!-- Seção Carro -->
         <section class="container">
             <h2>Carro</h2>
@@ -262,21 +274,31 @@
             </div>
             <div id="informacoesVeiculo">Selecione um veículo acima para ver seus detalhes e histórico de manutenção concluída.</div>
         </section>
-        <!-- Adicionar esta nova seção no seu index.html -->
-<hr>
-<section class="container" id="secao-dicas-manutencao">
-    <h2>Dicas de Manutenção da Garagem</h2>
-    <div class="botoes">
-        <button id="btn-buscar-dicas-gerais">Ver Dicas Gerais</button>
-    </div>
-    <div class="form-dicas-especificas">
-        <input type="text" id="input-tipo-veiculo" placeholder="Digite o tipo (carro, moto, caminhao)">
-        <button id="btn-buscar-dicas-especificas">Buscar Dicas Específicas</button>
-    </div>
-    <div id="dicas-resultado-container" class="dicas-container">
-        <p>Clique nos botões acima para ver as dicas.</p>
-    </div>
-</section>
+        <hr>
+        
+        <!-- NOVAS SEÇÕES ADICIONADAS AQUI -->
+        <section class="container" id="secao-dicas-manutencao">
+            <h2>Dicas de Manutenção da Garagem</h2>
+            <div class="botoes">
+                <button id="btn-buscar-dicas-gerais">Ver Dicas Gerais</button>
+            </div>
+            <div class="form-dicas-especificas">
+                <input type="text" id="input-tipo-veiculo" placeholder="Digite o tipo (carro, moto, caminhao)">
+                <button id="btn-buscar-dicas-especificas">Buscar Dicas Específicas</button>
+            </div>
+            <div id="dicas-resultado-container" class="dicas-container">
+                <p>Clique nos botões acima para ver as dicas.</p>
+            </div>
+        </section>
+
+        <hr>
+        <section class="container" id="secao-viagens-populares">
+            <h2>Inspiração para sua Próxima Aventura</h2>
+            <div id="cards-viagens-populares" class="cards-container">
+            </div>
+        </section>
+        <!-- FIM DAS NOVAS SEÇÕES -->
+        
         <hr> 
         <section class="container" id="planejar-viagem-secao">
             <h2>Planejar Viagem (Previsão do Tempo)</h2>
@@ -316,15 +338,18 @@
         </section>
     </main>
 
-<script src="js/manutencao.js"></script>
-<script src="js/veiculo.js"></script>
-<script src="js/carro.js"></script>
-<script src="js/carroEsportivo.js"></script>
-<script src="js/caminhao.js"></script>
-<script src="js/moto.js"></script>
-<script src="js/garagem.js"></script>
-<script src="js/weatherService.js"></script>
-<script src="js/main.js"></script>
+    <!--
+        **CORREÇÃO CRÍTICA:** A ordem está correta e a chamada ao weatherService.js foi removida.
+    -->
+    <script src="js/manutencao.js"></script>
+    <script src="js/veiculo.js"></script>
+    <script src="js/carro.js"></script>
+    <script src="js/carroEsportivo.js"></script>
+    <script src="js/caminhao.js"></script>
+    <script src="js/moto.js"></script>
+    <script src="js/garagem.js"></script>
+    <script src="js/main.js"></script>
+    <!-- GARANTA QUE A LINHA <script src="js/weatherService.js"></script> NÃO ESTÁ AQUI -->
 
 </body>
 </html>
