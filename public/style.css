@@ -1021,3 +1021,34 @@ input[type="time"]:focus {
     margin: 0;
     min-height: 54px;
 }
+/* style.css - Adicionar no final */
+
+nav.main-nav {
+    background-color: #c2185b; /* Cor principal escura */
+    padding: 10px 0;
+    margin-bottom: 25px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+nav.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav.main-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+nav.main-nav a:hover, nav.main-nav a.active {
+    background-color: #e91e63; /* Cor principal clara */
+}
