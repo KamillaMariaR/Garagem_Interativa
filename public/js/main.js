@@ -1,15 +1,16 @@
-// js/main.js (VERSÃO FINAL E COMPLETA GARANTIDA)
+// js/main.js (VERSÃO FINAL E COMPLETA PARA A PÁGINA INICIAL)
 
+// Variáveis Globais para a Página Principal
 const garagem = new Garagem();
 let dadosPrevisaoGlobal = null;
 let unidadeTemperaturaAtual = 'C';
 const CHAVE_STORAGE_UNIDADE_TEMP = 'unidadeTemperaturaPreferida';
-const backendUrl = 'http://localhost:3000';
+const backendUrl = 'http://localhost:3000'; // Mantenha para testes locais
 
-// ... (cole aqui o código COMPLETO do main.js da minha resposta anterior) ...
-// O código é longo, mas a última versão que passei estava funcional.
-// O erro não estava nele, mas no server.js e index.html.
-// Apenas para garantir, vou colar ele completo aqui de novo.
+// ==================================================================
+// FUNÇÕES AUXILIARES (Previsão do tempo, Fetch, etc.)
+// (Estas funções são as mesmas de antes, sem alterações)
+// ==================================================================
 
 function celsiusParaFahrenheit(celsius) { return (celsius * 9 / 5) + 32; }
 function formatarTemperatura(tempCelsius) { return unidadeTemperaturaAtual === 'F' ? `${celsiusParaFahrenheit(tempCelsius).toFixed(1)}°F` : `${tempCelsius.toFixed(1)}°C`; }
@@ -24,6 +25,7 @@ function getClassPorTemperatura(tempCelsius) {
 function renderizarPrevisaoCompleta() {
     if (!dadosPrevisaoGlobal) return;
     const previsaoResultadoDiv = document.getElementById('previsao-tempo-resultado');
+    if (!previsaoResultadoDiv) return;
     const numDias = parseInt(document.querySelector('input[name="numDias"]:checked').value, 10);
     const destacarChuva = document.getElementById('destaque-chuva').checked;
     const destacarTempBaixa = document.getElementById('destaque-temp-baixa-check').checked;
@@ -82,6 +84,7 @@ async function fetchForecastData(nomeCidade = "") {
     } catch (error) { throw error; }
 }
 async function buscarEExibirDicas(url, container) {
+    if (!container) return;
     container.innerHTML = '<p class="loading">Buscando dicas...</p>';
     try {
         const response = await fetch(url);
@@ -92,6 +95,7 @@ async function buscarEExibirDicas(url, container) {
 }
 async function carregarVeiculosDestaque() {
     const container = document.getElementById('cards-veiculos-destaque');
+    if (!container) return;
     container.innerHTML = '<p class="loading">Carregando destaques...</p>';
     try {
         const response = await fetch(`${backendUrl}/api/garagem/veiculos-destaque`);
@@ -102,6 +106,7 @@ async function carregarVeiculosDestaque() {
 }
 async function carregarServicosGaragem() {
     const lista = document.getElementById('lista-servicos-oferecidos');
+    if (!lista) return;
     lista.innerHTML = '<li class="nenhum">Carregando serviços...</li>';
     try {
         const response = await fetch(`${backendUrl}/api/garagem/servicos-oferecidos`);
@@ -112,6 +117,7 @@ async function carregarServicosGaragem() {
 }
 async function carregarViagensPopulares() {
     const container = document.getElementById('cards-viagens-populares');
+    if (!container) return;
     container.innerHTML = '<p class="loading">Buscando inspirações...</p>';
     try {
         const response = await fetch(`${backendUrl}/api/viagens-populares`);
@@ -120,41 +126,111 @@ async function carregarViagensPopulares() {
         container.innerHTML = viagens.length > 0 ? viagens.map(v => `<div class="viagem-card"><img src="${v.imagemUrl}" alt="${v.destino}" onerror="this.onerror=null;this.src='imagens/civic-removebg-preview.png';"><h3>${v.destino}, ${v.pais}</h3><p>${v.descricao}</p></div>`).join('') : '<p>Nenhuma viagem em destaque.</p>';
     } catch (error) { container.innerHTML = `<p class="error" style="width: 100%;">${error.message}</p>`; }
 }
+
+// ==================================================================
+// INICIALIZAÇÃO DA PÁGINA PRINCIPAL (`index.html`)
+// ==================================================================
 window.onload = () => {
-    console.log("window.onload disparado. Inicializando...");
+    console.log("Página PRINCIPAL (`index.html`) carregada. Inicializando...");
+
+    // 1. Carrega os dados das seções da página inicial
     carregarVeiculosDestaque();
     carregarServicosGaragem();
     carregarViagensPopulares();
+
+    // 2. Carrega a garagem do localStorage
     const carregou = garagem.carregarGaragem();
+
+    // 3. Se for o primeiro acesso do usuário (localStorage vazio), cria os veículos padrão
     if (!carregou || Object.keys(garagem.veiculos).length === 0) {
-        garagem.criarCarro(); garagem.criarMoto(); garagem.criarCarroEsportivo(); garagem.criarCaminhao(); garagem.exibirInformacoes('meuCarro');
-    } else { garagem.atualizarUICompleta(); }
+        console.log("Primeiro acesso ou localStorage vazio. Criando veículos padrão...");
+        garagem.criarCarro(); 
+        garagem.criarMoto(); 
+        garagem.criarCarroEsportivo(); 
+        garagem.criarCaminhao();
+    }
+    
+    // 4. Atualiza a lista de agendamentos (que existe na página inicial)
     garagem.atualizarListaAgendamentos();
-    document.querySelectorAll('.btn-detalhes-extras').forEach(b => b.addEventListener('click', async e => garagem.mostrarDetalhesExtras(e.target.dataset.veiculoId)));
-    const btnDicasGerais = document.getElementById('btn-buscar-dicas-gerais'), btnDicasEspecificas = document.getElementById('btn-buscar-dicas-especificas'), inputTipoVeiculo = document.getElementById('input-tipo-veiculo'), dicasContainer = document.getElementById('dicas-resultado-container');
-    if (btnDicasGerais) btnDicasGerais.addEventListener('click', () => buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao`, dicasContainer));
-    if (btnDicasEspecificas) btnDicasEspecificas.addEventListener('click', () => { if (inputTipoVeiculo.value.trim()) buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao/${inputTipoVeiculo.value.trim()}`, dicasContainer); else alert('Digite um tipo de veículo.'); });
-    const verificarClimaBtn = document.getElementById('verificar-clima-btn'), destinoInput = document.getElementById('destino-viagem'), previsaoResultadoDiv = document.getElementById('previsao-tempo-resultado'), btnAlternarUnidade = document.getElementById('alternar-unidade-temp-btn');
-    if (btnAlternarUnidade) btnAlternarUnidade.addEventListener('click', () => { unidadeTemperaturaAtual = unidadeTemperaturaAtual === 'C' ? 'F' : 'C'; localStorage.setItem(CHAVE_STORAGE_UNIDADE_TEMP, unidadeTemperaturaAtual); btnAlternarUnidade.textContent = `Mudar para ${unidadeTemperaturaAtual === 'C' ? '°F' : '°C'}`; renderizarPrevisaoCompleta(); });
-    if (verificarClimaBtn) verificarClimaBtn.addEventListener('click', async () => {
-        const cidade = destinoInput.value.trim();
-        if (!cidade) { previsaoResultadoDiv.innerHTML = '<p class="error">Digite uma cidade.</p>'; return; }
-        previsaoResultadoDiv.innerHTML = '<p class="loading">Buscando previsão...</p>';
-        try { dadosPrevisaoGlobal = await fetchForecastData(cidade); renderizarPrevisaoCompleta(); } catch (error) { previsaoResultadoDiv.innerHTML = `<p class="error">${error.message}</p>`; dadosPrevisaoGlobal = null; }
-    });
-    if (previsaoResultadoDiv) previsaoResultadoDiv.addEventListener('click', e => {
-        const cardClicado = e.target.closest('.forecast-card-clickable');
-        if (!cardClicado || !dadosPrevisaoGlobal) return;
-        const detalhesContainer = cardClicado.querySelector('.detalhes-horarios-container');
-        if (detalhesContainer.style.display === 'block') { detalhesContainer.style.display = 'none'; return; }
-        const previsaoDoDia = dadosPrevisaoGlobal.previsoes.find(p => p.data === cardClicado.dataset.forecastDate);
-        if (previsaoDoDia?.entradasHorarias) {
-            detalhesContainer.innerHTML = '<h5>Previsão Horária:</h5><div class="horarios-grid">' + previsaoDoDia.entradasHorarias.map(h => `<div class="horario-item"><span>${h.dt_txt.split(' ')[1].substring(0, 5)}</span><img src="https://openweathermap.org/img/wn/${h.weather[0].icon}.png" alt="${h.weather[0].description}"><span>${formatarTemperaturaInteira(h.main.temp)}</span></div>`).join('') + '</div>';
-            detalhesContainer.style.display = 'block';
+
+    // 5. Configura os event listeners para os elementos que ESTÃO na página inicial
+    const btnDicasGerais = document.getElementById('btn-buscar-dicas-gerais');
+    const btnDicasEspecificas = document.getElementById('btn-buscar-dicas-especificas');
+    const inputTipoVeiculo = document.getElementById('input-tipo-veiculo');
+    const dicasContainer = document.getElementById('dicas-resultado-container');
+    
+    if (btnDicasGerais) {
+        btnDicasGerais.addEventListener('click', () => buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao`, dicasContainer));
+    }
+    if (btnDicasEspecificas) {
+        btnDicasEspecificas.addEventListener('click', () => { 
+            if (inputTipoVeiculo.value.trim()) {
+                buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao/${inputTipoVeiculo.value.trim()}`, dicasContainer); 
+            } else {
+                alert('Digite um tipo de veículo.');
+            }
+        });
+    }
+
+    const verificarClimaBtn = document.getElementById('verificar-clima-btn');
+    const destinoInput = document.getElementById('destino-viagem');
+    const previsaoResultadoDiv = document.getElementById('previsao-tempo-resultado');
+    const btnAlternarUnidade = document.getElementById('alternar-unidade-temp-btn');
+
+    if (btnAlternarUnidade) {
+        btnAlternarUnidade.addEventListener('click', () => { 
+            unidadeTemperaturaAtual = unidadeTemperaturaAtual === 'C' ? 'F' : 'C'; 
+            localStorage.setItem(CHAVE_STORAGE_UNIDADE_TEMP, unidadeTemperaturaAtual); 
+            btnAlternarUnidade.textContent = `Mudar para ${unidadeTemperaturaAtual === 'C' ? '°F' : '°C'}`; 
+            renderizarPrevisaoCompleta(); 
+        });
+    }
+
+    if (verificarClimaBtn) {
+        verificarClimaBtn.addEventListener('click', async () => {
+            const cidade = destinoInput.value.trim();
+            if (!cidade) { 
+                previsaoResultadoDiv.innerHTML = '<p class="error">Digite uma cidade.</p>'; 
+                return; 
+            }
+            previsaoResultadoDiv.innerHTML = '<p class="loading">Buscando previsão...</p>';
+            try { 
+                dadosPrevisaoGlobal = await fetchForecastData(cidade); 
+                renderizarPrevisaoCompleta(); 
+            } catch (error) { 
+                previsaoResultadoDiv.innerHTML = `<p class="error">${error.message}</p>`; 
+                dadosPrevisaoGlobal = null; 
+            }
+        });
+    }
+
+    if (previsaoResultadoDiv) {
+        previsaoResultadoDiv.addEventListener('click', e => {
+            const cardClicado = e.target.closest('.forecast-card-clickable');
+            if (!cardClicado || !dadosPrevisaoGlobal) return;
+            const detalhesContainer = cardClicado.querySelector('.detalhes-horarios-container');
+            if (detalhesContainer.style.display === 'block') { 
+                detalhesContainer.style.display = 'none'; 
+                return; 
+            }
+            const previsaoDoDia = dadosPrevisaoGlobal.previsoes.find(p => p.data === cardClicado.dataset.forecastDate);
+            if (previsaoDoDia?.entradasHorarias) {
+                detalhesContainer.innerHTML = '<h5>Previsão Horária:</h5><div class="horarios-grid">' + previsaoDoDia.entradasHorarias.map(h => `<div class="horario-item"><span>${h.dt_txt.split(' ')[1].substring(0, 5)}</span><img src="https://openweathermap.org/img/wn/${h.weather[0].icon}.png" alt="${h.weather[0].description}"><span>${formatarTemperaturaInteira(h.main.temp)}</span></div>`).join('') + '</div>';
+                detalhesContainer.style.display = 'block';
+            }
+        });
+    }
+
+    document.querySelectorAll('input[name="numDias"]').forEach(r => r.addEventListener('change', () => renderizarPrevisaoCompleta()));
+    ['destaque-chuva', 'destaque-temp-baixa-check', 'destaque-temp-alta-check', 'destaque-temp-baixa-valor', 'destaque-temp-alta-valor'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', () => renderizarPrevisaoCompleta());
         }
     });
-    document.querySelectorAll('input[name="numDias"]').forEach(r => r.addEventListener('change', () => renderizarPrevisaoCompleta()));
-    ['destaque-chuva', 'destaque-temp-baixa-check', 'destaque-temp-alta-check', 'destaque-temp-baixa-valor', 'destaque-temp-alta-valor'].forEach(id => document.getElementById(id)?.addEventListener('change', () => renderizarPrevisaoCompleta()));
+
+    // 6. Verifica agendamentos próximos ao carregar a página principal
     garagem.verificarAgendamentosProximos();
-    console.log("Inicialização completa.");
+    
+    console.log("Inicialização da página principal completa.");
 };
