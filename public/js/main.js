@@ -5,7 +5,7 @@ const garagem = new Garagem();
 let dadosPrevisaoGlobal = null;
 let unidadeTemperaturaAtual = 'C';
 const CHAVE_STORAGE_UNIDADE_TEMP = 'unidadeTemperaturaPreferida';
-const backendUrl = 'http://localhost:3000'; // Mantenha para testes locais
+const backendUrl = 'http://localhost:3001'; // <-- CORRIGIDO AQUI
 
 // ==================================================================
 // FUNÇÕES AUXILIARES (Previsão do tempo, Fetch, etc.)
@@ -93,6 +93,7 @@ async function buscarEExibirDicas(url, container) {
         container.innerHTML = dicas.length > 0 ? '<ul>' + dicas.map(d => `<li>${d.dica}</li>`).join('') + '</ul>' : '<p>Nenhuma dica encontrada.</p>';
     } catch (error) { container.innerHTML = `<p class="error">${error.message}</p>`; }
 }
+// js/main.js
 async function carregarVeiculosDestaque() {
     const container = document.getElementById('cards-veiculos-destaque');
     if (!container) return;
@@ -101,9 +102,17 @@ async function carregarVeiculosDestaque() {
         const response = await fetch(`${backendUrl}/api/garagem/veiculos-destaque`);
         if (!response.ok) throw new Error('Falha ao carregar veículos em destaque.');
         const veiculos = await response.json();
-        container.innerHTML = veiculos.length > 0 ? veiculos.map(v => `<div class="veiculo-card"><img src="${v.imagemUrl}" alt="${v.modelo}" onerror="this.onerror=null;this.src='imagens/civic-removebg-preview.png';"><h3>${v.modelo} (${v.ano})</h3><p><strong>Destaque:</strong> ${v.destaque}</p></div>`).join('') : '<p>Nenhum veículo em destaque.</p>';
+        // AQUI é onde os dados do server.js são usados para criar o HTML
+        container.innerHTML = veiculos.length > 0 ? veiculos.map(v => `
+            <div class="veiculo-card">
+                <img src="${v.imagemUrl}" alt="${v.modelo}" onerror="this.onerror=null;this.src='imagens/civic-removebg-preview.png';"> 
+                <h3>${v.modelo} (${v.ano})</h3> 
+                <p><strong>Destaque:</strong> ${v.destaque}</p>
+            </div>`).join('') : '<p>Nenhum veículo em destaque.</p>';
     } catch (error) { container.innerHTML = `<p class="error" style="width: 100%;">${error.message}</p>`; }
 }
+
+
 async function carregarServicosGaragem() {
     const lista = document.getElementById('lista-servicos-oferecidos');
     if (!lista) return;
@@ -123,7 +132,7 @@ async function carregarViagensPopulares() {
         const response = await fetch(`${backendUrl}/api/viagens-populares`);
         if (!response.ok) throw new Error('Falha ao carregar inspirações de viagem.');
         const viagens = await response.json();
-        container.innerHTML = viagens.length > 0 ? viagens.map(v => `<div class="viagem-card"><img src="${v.imagemUrl}" alt="${v.destino}" onerror="this.onerror=null;this.src='imagens/civic-removebg-preview.png';"><h3>${v.destino}, ${v.pais}</h3><p>${v.descricao}</p></div>`).join('') : '<p>Nenhuma viagem em destaque.</p>';
+        container.innerHTML = viagens.length > 0 ? viagens.map(v => `<div class="viagem-card"><img src="${v.imagemUrl}" alt="${v.destino}" onerror="this.onerror=null;this.src='https://i0.statig.com.br/bancodeimagens/9z/32/eh/9z32eh9qamnwz2hgvu2eyjkdz.jpg';"><h3>${v.destino}, ${v.pais}</h3><p>${v.descricao}</p></div>`).join('') : '<p>Nenhuma viagem em destaque.</p>';
     } catch (error) { container.innerHTML = `<p class="error" style="width: 100%;">${error.message}</p>`; }
 }
 
@@ -162,7 +171,7 @@ window.onload = () => {
     if (btnDicasGerais) {
         btnDicasGerais.addEventListener('click', () => buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao`, dicasContainer));
     }
-    if (btnDicasEspecificas) {
+    if (btnDicasEspecificas && inputTipoVeiculo) { // Adicionada verificação para inputTipoVeiculo
         btnDicasEspecificas.addEventListener('click', () => { 
             if (inputTipoVeiculo.value.trim()) {
                 buscarEExibirDicas(`${backendUrl}/api/dicas-manutencao/${inputTipoVeiculo.value.trim()}`, dicasContainer); 
@@ -186,7 +195,7 @@ window.onload = () => {
         });
     }
 
-    if (verificarClimaBtn) {
+    if (verificarClimaBtn && destinoInput && previsaoResultadoDiv) { // Adicionadas verificações
         verificarClimaBtn.addEventListener('click', async () => {
             const cidade = destinoInput.value.trim();
             if (!cidade) { 
@@ -209,6 +218,7 @@ window.onload = () => {
             const cardClicado = e.target.closest('.forecast-card-clickable');
             if (!cardClicado || !dadosPrevisaoGlobal) return;
             const detalhesContainer = cardClicado.querySelector('.detalhes-horarios-container');
+            if (!detalhesContainer) return; // Adicionada verificação
             if (detalhesContainer.style.display === 'block') { 
                 detalhesContainer.style.display = 'none'; 
                 return; 
