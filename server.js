@@ -16,12 +16,38 @@ app.use(express.json());
 
 // === DADOS MOCKADOS (SIMULAÇÃO DE BANCO DE DADOS) ===
 
+// --- REVISÃO AQUI para garantir a correspondência ---
 const veiculosDestaque = [
-    { id: 1, modelo: "Honda Civic G10", ano: 2021, destaque: "Confiabilidade e Economia", imagemUrl: "imagens/civic-removebg-preview.png" },
-    { id: 2, modelo: "Pagani Huayra", ano: 2020, destaque: "Performance Extrema", imagemUrl: "imagens/paganiRosa-removebg-preview.png" },
-    { id: 3, modelo: "Mercedes-Benz Actros", ano: 2022, destaque: "Robustez para Longas Distâncias", imagemUrl: "imagens/caminhão-removebg-preview.png" },
-    { id: 4, modelo: "Kawasaki Ninja ZX-6R", ano: 2023, destaque: "Agilidade e Estilo Esportivo", imagemUrl: "imagens/kawasaki-Photoroom.png" }
+    {
+        id: 1,
+        modelo: "Honda Civic G10",
+        ano: 2021,
+        destaque: "Confiabilidade e Economia",
+        imagemUrl: "imagens/civic-removebg-preview.png" // Assumindo que esta é a imagem correta do Civic
+    },
+    {
+        id: 2,
+        modelo: "Pagani Huayra",
+        ano: 2020,
+        destaque: "Performance Extrema",
+        imagemUrl: "imagens/paganiRosa-removebg-preview.png" // Assumindo que esta é a imagem correta do Pagani
+    },
+    {
+        id: 3,
+        modelo: "Mercedes-Benz Actros",
+        ano: 2022,
+        destaque: "Robustez para Longas Distâncias",
+        imagemUrl: "imagens/caminhão-removebg-preview.png" // Assumindo que esta é a imagem correta do caminhão
+    },
+    {
+        id: 4,
+        modelo: "Kawasaki Ninja ZX-6R",
+        ano: 2023,
+        destaque: "Agilidade e Estilo Esportivo",
+        imagemUrl: "imagens/kawasaki-Photoroom.png" // Assumindo que esta é a imagem correta da Kawasaki
+    }
 ];
+// --- FIM DA REVISÃO ---
 
 const servicosOferecidos = [
     { nome: "Troca de Óleo e Filtro", descricao: "Utilizamos óleos sintéticos e semi-sintéticos de alta qualidade.", precoEstimado: "R$ 250,00" },
@@ -31,9 +57,27 @@ const servicosOferecidos = [
 ];
 
 const viagensPopulares = [
-    { id: 1, destino: "Serra Gaúcha", pais: "Brasil", descricao: "Estradas sinuosas e paisagens deslumbrantes, ideal para uma viagem de carro ou moto.", imagemUrl: "https://i.imgur.com/kY7p6s8.jpeg" },
-    { id: 2, destino: "Rota 66", pais: "EUA", descricao: "A icônica 'Mother Road' que cruza os Estados Unidos, um sonho para qualquer aventureiro.", imagemUrl: "https://i.imgur.com/gKEd1gC.jpeg" },
-    { id: 3, destino: "Deserto do Atacama", pais: "Chile", descricao: "Uma aventura off-road por um dos desertos mais áridos e belos do mundo.", imagemUrl: "https://i.imgur.com/1vJdJdF.jpeg" }
+    {
+        id: 1,
+        destino: "Serra Gaúcha",
+        pais: "Brasil",
+        descricao: "Estradas sinuosas e paisagens deslumbrantes, ideal para uma viagem de carro ou moto.",
+        imagemUrl: "https://images.pexels.com/photos/1842091/pexels-photo-1842091.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        id: 2,
+        destino: "Rota 66",
+        pais: "EUA",
+        descricao: "A icônica 'Mother Road' que cruza os Estados Unidos, um sonho para qualquer aventureiro.",
+        imagemUrl: "https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+        id: 3,
+        destino: "Deserto do Atacama",
+        pais: "Chile",
+        descricao: "Uma aventura off-road por um dos desertos mais áridos e belos do mundo.",
+        imagemUrl: "https://images.pexels.com/photos/1756064/pexels-photo-1756064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    }
 ];
 
 const dicasManutencao = {
