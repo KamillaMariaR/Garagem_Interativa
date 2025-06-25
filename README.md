@@ -132,37 +132,41 @@ O servidor backend (`server.js`) expõe os seguintes endpoints que são consumid
 | `GET`       | `/api/garagem/veiculos-destaque`         | Retorna uma lista de objetos, cada um representando um veículo em destaque para exibição na página inicial.            | Nenhum                                            |
 | `GET`       | `/api/garagem/servicos-oferecidos`       | Retorna uma lista de objetos, cada um descrevendo um serviço oferecido pela garagem, incluindo nome, descrição e preço. | Nenhum                                            |
 | `GET`       | `/api/viagens-populares`                 | Retorna uma lista de objetos, cada um representando um destino de viagem popular com imagem, descrição e país.         | Nenhum                                            |
-
 ## 📂 Estrutura Detalhada do Projeto
 
-carros-v2-09-04-2025/
-├── .env # Arquivo para variáveis de ambiente (NÃO versionar com chaves reais)
-├── imagens/ # Contém as imagens dos veículos e outras mídias
-│ ├── caminhao-removebg-preview.png
-│ ├── civic-removebg-preview.png
-│ ├── kawasaki-Photoroom.png
-│ └── paganiRosa-removebg-preview.png
-├── js/ # Contém os arquivos JavaScript do frontend
-│ ├── caminhao.js # Classe Caminhao (herda de Carro)
-│ ├── carro.js # Classe Carro (herda de Veiculo)
-│ ├── carroEsportivo.js # Classe CarroEsportivo (herda de Carro)
-│ ├── garagem.js # Classe Garagem (gerencia os veículos e interações)
-│ ├── main.js # Script principal para index.html (inicialização e eventos globais)
-│ ├── main_detalhes.js # Script principal para páginas de detalhes de veículos
-│ ├── manutencao.js # Classe Manutencao
-│ ├── moto.js # Classe Moto (herda de Carro)
-│ └── veiculo.js # Classe base Veiculo
-├── node_modules/ # Dependências do Node.js (instaladas via npm install)
-├── detalhes_caminhao.html # Página de detalhes para o Caminhão
-├── detalhes_carro.html # Página de detalhes para o Carro
-├── detalhes_esportivo.html # Página de detalhes para o Carro Esportivo
-├── detalhes_moto.html # Página de detalhes para a Moto
-├── index.html # Arquivo principal da interface do usuário (página inicial)
-├── package-lock.json # Gerado automaticamente para registrar versões exatas das dependências
-├── package.json # Define metadados do projeto e dependências do Node.js
-├── README.md # Esta documentação
-├── server.js # O servidor backend (Node.js/Express)
-└── style.css # Folha de estilos principal para todas as páginas
+A seguir, a organização dos principais arquivos e pastas do projeto:
+
+*   `carros-v2-09-04-2025/` (Diretório Raiz do Projeto)
+    *   `.env` : Arquivo para configurar variáveis de ambiente, como a chave da API OpenWeatherMap. (Importante: este arquivo não deve ser enviado para repositórios públicos se contiver chaves secretas).
+    *   `node_modules/` : Pasta criada pelo `npm` que armazena todas as dependências do backend (Express, Axios, etc.).
+    *   `package.json` : Arquivo de metadados do projeto Node.js, lista as dependências e scripts.
+    *   `package-lock.json` : Registra as versões exatas das dependências instaladas, garantindo consistência.
+    *   `server.js` : O coração do backend, implementado com Node.js e Express, responsável por servir a API e fazer proxy para serviços externos.
+    *   `README.md` : Este arquivo de documentação que você está lendo.
+    *   **Arquivos HTML (Frontend):**
+        *   `index.html` : A página inicial da Garagem Interativa.
+        *   `detalhes_carro.html` : Página dedicada à interação com o veículo Carro.
+        *   `detalhes_esportivo.html` : Página dedicada à interação com o Carro Esportivo.
+        *   `detalhes_caminhao.html` : Página dedicada à interação com o Caminhão.
+        *   `detalhes_moto.html` : Página dedicada à interação com a Moto.
+    *   **Recursos Estáticos (Frontend):**
+        *   `style.css` : Folha de estilos CSS principal, aplicada a todas as páginas HTML.
+        *   `imagens/` : Diretório contendo as imagens dos veículos e outros elementos visuais.
+            *   `civic-removebg-preview.png`
+            *   `paganiRosa-removebg-preview.png`
+            *   `caminhão-removebg-preview.png`
+            *   `kawasaki-Photoroom.png`
+            *   *(outras imagens, se houver)*
+        *   `js/` : Diretório contendo todos os scripts JavaScript do lado do cliente (frontend).
+            *   `veiculo.js` : Classe base para todos os tipos de veículos.
+            *   `carro.js` : Classe para o veículo Carro (herda de `Veiculo`).
+            *   `carroEsportivo.js` : Classe para o Carro Esportivo (herda de `Carro`).
+            *   `caminhao.js` : Classe para o Caminhão (herda de `Carro`).
+            *   `moto.js` : Classe para a Moto (herda de `Carro`).
+            *   `manutencao.js` : Classe para representar registros de manutenção.
+            *   `garagem.js` : Classe principal que gerencia a coleção de veículos, interações, persistência e comunicação com a UI.
+            *   `main.js` : Script de inicialização e lógica de eventos para a `index.html`.
+            *   `main_detalhes.js` : Script de inicialização e lógica de eventos para as páginas `detalhes_*.html`.
 
 ## 💡 Melhorias Futuras e Possíveis Extensões
 
