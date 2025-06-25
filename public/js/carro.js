@@ -147,40 +147,41 @@ class Carro extends Veiculo {
 
     // --- Métodos de Atualização de UI (Implementação) ---
 
-    atualizarStatus() {
-        const prefixoId = this.obterPrefixoIdHtml();
-        const statusElem = document.getElementById(`${prefixoId}-status`);
+    // js/carro.js - DENTRO da classe Carro
 
-        // IDs dos botões comuns (podem ter sufixo ou não)
-        const ligarBtnId = `ligar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
-        const desligarBtnId = `desligar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
-        const acelerarBtnId = `acelerar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
-        const frearBtnId = `frear${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
-        const pintarBtnId = `pintar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
-        const abastecerBtnId = `abastecer${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
+// Substitua seu método atualizarStatus por este:
+atualizarStatus() {
+    const prefixoId = this.obterPrefixoIdHtml();
+    const statusElem = document.getElementById(`${prefixoId}-status`);
 
-        // Busca os elementos
-        const ligarBtn = document.getElementById(ligarBtnId);
-        const desligarBtn = document.getElementById(desligarBtnId);
-        const acelerarBtn = document.getElementById(acelerarBtnId);
-        const frearBtn = document.getElementById(frearBtnId);
-        const pintarBtn = document.getElementById(pintarBtnId);
-        const abastecerBtn = document.getElementById(abastecerBtnId);
+    // IDs dos botões
+    const ligarBtnId = `ligar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
+    const desligarBtnId = `desligar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
+    const acelerarBtnId = `acelerar${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
+    const frearBtnId = `frear${prefixoId === 'carro' ? '' : '-' + prefixoId}-btn`;
 
-        // Atualiza texto e cor do status
-        if (statusElem) {
-            statusElem.textContent = this.ligado ? 'Ligado' : 'Desligado';
-            statusElem.style.color = this.ligado ? 'green' : 'red';
-        }
-
-        // Habilita/Desabilita botões
-        if (ligarBtn) ligarBtn.disabled = this.ligado;
-        if (desligarBtn) desligarBtn.disabled = !this.ligado;
-        if (acelerarBtn) acelerarBtn.disabled = !this.ligado;
-        if (frearBtn) frearBtn.disabled = this.velocidade === 0; // Desabilita só se parado
-        if (pintarBtn) pintarBtn.disabled = false; // Sempre habilitado
-        if (abastecerBtn) abastecerBtn.disabled = false; // Sempre habilitado
+    // Busca os elementos
+    const ligarBtn = document.getElementById(ligarBtnId);
+    const desligarBtn = document.getElementById(desligarBtnId);
+    const acelerarBtn = document.getElementById(acelerarBtnId);
+    const frearBtn = document.getElementById(frearBtnId);
+    
+    // Atualiza texto e cor do status
+    if (statusElem) { // <-- VERIFICAÇÃO IMPORTANTE!
+        statusElem.textContent = this.ligado ? 'Ligado' : 'Desligado';
+        statusElem.style.color = this.ligado ? 'green' : 'red';
     }
+
+    // Habilita/Desabilita botões, SÓ SE ELES EXISTIREM
+    if (ligarBtn) ligarBtn.disabled = this.ligado;
+    if (desligarBtn) desligarBtn.disabled = !this.ligado;
+    if (acelerarBtn) acelerarBtn.disabled = !this.ligado;
+    if (frearBtn) frearBtn.disabled = this.velocidade === 0;
+
+    // A lógica para os botões específicos (turbo, carga) já está nas classes filhas,
+    // e como elas só rodam na página delas, o risco de erro é menor.
+    // Esta mudança no Carro.js já protege a maior parte da lógica.
+}
 
     atualizarVelocidadeDisplay() {
         const prefixoId = this.obterPrefixoIdHtml();
