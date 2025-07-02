@@ -56,29 +56,36 @@ const servicosOferecidos = [
     { nome: "Diagnóstico Eletrônico", descricao: "Identificação de falhas com scanner automotivo especializado.", precoEstimado: "R$ 120,00" }
 ];
 
+
+// ▼▼▼ ALTERAÇÃO PRINCIPAL AQUI ▼▼▼
 const viagensPopulares = [
     {
         id: 1,
         destino: "Serra Gaúcha",
         pais: "Brasil",
         descricao: "Estradas sinuosas e paisagens deslumbrantes, ideal para uma viagem de carro ou moto.",
-        imagemUrl: "https://images.pexels.com/photos/1842091/pexels-photo-1842091.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        // Alterado para usar sua imagem local de Gramado/Canela
+        imagemUrl: "imagens/serra-gaucha.jpg" 
     },
     {
         id: 2,
         destino: "Rota 66",
         pais: "EUA",
         descricao: "A icônica 'Mother Road' que cruza os Estados Unidos, um sonho para qualquer aventureiro.",
-        imagemUrl: "https://images.pexels.com/photos/3889742/pexels-photo-3889742.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        // Alterado para usar sua imagem local da Rota 66 (Monument Valley)
+        imagemUrl: "imagens/rota-66.jpg"
     },
     {
         id: 3,
         destino: "Deserto do Atacama",
         pais: "Chile",
         descricao: "Uma aventura off-road por um dos desertos mais áridos e belos do mundo.",
-        imagemUrl: "https://images.pexels.com/photos/1756064/pexels-photo-1756064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        // Alterado para usar sua imagem local do Atacama
+        imagemUrl: "imagens/atacama.jpg"
     }
 ];
+// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
+
 
 const dicasManutencao = {
     gerais: [
