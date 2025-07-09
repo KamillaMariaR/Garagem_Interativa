@@ -1,53 +1,65 @@
-// server.js (VERSÃO CORRETA PARA O PROJETO GARAGEM INTERATIVA)
+// server.js (VERSÃO MODIFICADA COM CONEXÃO AO BANCO DE DADOS)
 
+// === IMPORTAÇÕES ===
+// Note que usamos 'require' pois seu projeto está configurado para CommonJS
 const express = require('express');
-const cors = require('cors'); // Pacote para habilitar o CORS
-const axios = require('axios'); // Para fazer a chamada à API do OpenWeather
-require('dotenv').config(); // Para carregar variáveis de ambiente
+const cors = require('cors');
+const axios = require('axios');
+const mongoose = require('mongoose'); // <-- 1. Importamos o Mongoose
+require('dotenv').config(); // Carrega variáveis do .env (MONGO_URI, etc)
 
 const app = express();
-// Se você for fazer deploy no Render, use a variável de ambiente PORT. Senão, use a porta 3000.
 const PORT = process.env.PORT || 3001;
 
 // === MIDDLEWARE ===
-// Habilita o CORS para todas as rotas. Essencial para o frontend poder acessar o backend.
 app.use(cors());
 app.use(express.json());
 
-// === DADOS MOCKADOS (SIMULAÇÃO DE BANCO DE DADOS) ===
+// === CONEXÃO COM O BANCO DE DADOS (MongoDB com Mongoose) ===
+const connectDB = async () => {
+    try {
+        const mongoUri = process.env.MONGO_URI;
+        if (!mongoUri) {
+            console.error("ERRO FATAL: Variável de ambiente MONGO_URI não definida!");
+            process.exit(1); // Encerra a aplicação se a URI não estiver configurada
+        }
 
-// --- REVISÃO AQUI para garantir a correspondência ---
-const veiculosDestaque = [
-    {
-        id: 1,
-        modelo: "Honda Civic G10",
-        ano: 2021,
-        destaque: "Confiabilidade e Economia",
-        imagemUrl: "imagens/civic-removebg-preview.png" // Assumindo que esta é a imagem correta do Civic
-    },
-    {
-        id: 2,
-        modelo: "Pagani Huayra",
-        ano: 2020,
-        destaque: "Performance Extrema",
-        imagemUrl: "imagens/paganiRosa-removebg-preview.png" // Assumindo que esta é a imagem correta do Pagani
-    },
-    {
-        id: 3,
-        modelo: "Mercedes-Benz Actros",
-        ano: 2022,
-        destaque: "Robustez para Longas Distâncias",
-        imagemUrl: "imagens/caminhão-removebg-preview.png" // Assumindo que esta é a imagem correta do caminhão
-    },
-    {
-        id: 4,
-        modelo: "Kawasaki Ninja ZX-6R",
-        ano: 2023,
-        destaque: "Agilidade e Estilo Esportivo",
-        imagemUrl: "imagens/kawasaki-Photoroom.png" // Assumindo que esta é a imagem correta da Kawasaki
+        await mongoose.connect(mongoUri);
+
+        console.log("🚀 Conectado ao MongoDB Atlas via Mongoose!");
+
+        // Opcional: Ouvir eventos de conexão para mais logs
+        mongoose.connection.on('error', (err) => console.error("❌ Mongoose erro de conexão:", err));
+        mongoose.connection.on('disconnected', () => console.warn("⚠️ Mongoose desconectado!"));
+
+    } catch (err) {
+        console.error("❌ ERRO FATAL: Falha ao conectar ao MongoDB:", err.message);
+        process.exit(1); // Encerra se a conexão inicial falhar
     }
+};
+
+// === DEFINIÇÃO DOS MODELOS (Mongoose Schemas) ===
+// Um Schema é o "molde" de como os dados serão guardados no banco.
+const veiculoSchema = new mongoose.Schema({
+    id: Number,
+    modelo: String,
+    ano: Number,
+    destaque: String,
+    imagemUrl: String
+});
+
+// O Model é a ferramenta para interagir com a coleção "veiculos" no banco.
+const Veiculo = mongoose.model('Veiculo', veiculoSchema);
+
+// --- DADOS MOCKADOS (Vamos manter alguns por enquanto, mas os veículos virão do banco!) ---
+
+// ESTES DADOS SERÃO IGNORADOS, POIS A ROTA AGORA BUSCA DO BANCO
+/*
+const veiculosDestaque = [
+    { id: 1, modelo: "Honda Civic G10", ano: 2021, ... },
+    ...
 ];
-// --- FIM DA REVISÃO ---
+*/
 
 const servicosOferecidos = [
     { nome: "Troca de Óleo e Filtro", descricao: "Utilizamos óleos sintéticos e semi-sintéticos de alta qualidade.", precoEstimado: "R$ 250,00" },
@@ -56,129 +68,79 @@ const servicosOferecidos = [
     { nome: "Diagnóstico Eletrônico", descricao: "Identificação de falhas com scanner automotivo especializado.", precoEstimado: "R$ 120,00" }
 ];
 
-
-// ▼▼▼ ALTERAÇÃO PRINCIPAL AQUI ▼▼▼
 const viagensPopulares = [
-    {
-        id: 1,
-        destino: "Serra Gaúcha",
-        pais: "Brasil",
-        descricao: "Estradas sinuosas e paisagens deslumbrantes, ideal para uma viagem de carro ou moto.",
-        // Alterado para usar sua imagem local de Gramado/Canela
-        imagemUrl: "imagens/serra-gaucha.jpg" 
-    },
-    {
-        id: 2,
-        destino: "Rota 66",
-        pais: "EUA",
-        descricao: "A icônica 'Mother Road' que cruza os Estados Unidos, um sonho para qualquer aventureiro.",
-        // Alterado para usar sua imagem local da Rota 66 (Monument Valley)
-        imagemUrl: "imagens/rota-66.jpg"
-    },
-    {
-        id: 3,
-        destino: "Deserto do Atacama",
-        pais: "Chile",
-        descricao: "Uma aventura off-road por um dos desertos mais áridos e belos do mundo.",
-        // Alterado para usar sua imagem local do Atacama
-        imagemUrl: "imagens/atacama.jpg"
-    }
+    { id: 1, destino: "Serra Gaúcha", pais: "Brasil", descricao: "Estradas sinuosas...", imagemUrl: "imagens/serra-gaucha.jpg" },
+    { id: 2, destino: "Rota 66", pais: "EUA", descricao: "A icônica 'Mother Road'...", imagemUrl: "imagens/rota-66.jpg" },
+    { id: 3, destino: "Deserto do Atacama", pais: "Chile", descricao: "Uma aventura off-road...", imagemUrl: "imagens/atacama.jpg" }
 ];
-// ▲▲▲ FIM DA ALTERAÇÃO ▲▲▲
 
-
-const dicasManutencao = {
-    gerais: [
-        { dica: "Calibre os pneus semanalmente, incluindo o estepe." },
-        { dica: "Verifique o nível do óleo do motor e da água do radiador a cada 15 dias." },
-        { dica: "Não ande com o carro na 'reserva' do tanque, isso pode danificar a bomba de combustível." }
-    ],
-    carro: [
-        { dica: "Faça o rodízio dos pneus a cada 10.000 km para um desgaste uniforme." },
-        { dica: "Troque o filtro de ar do motor junto com a troca de óleo." }
-    ],
-    moto: [
-        { dica: "Lubrifique e verifique a tensão da corrente a cada 500 km." },
-        { dica: "Verifique o estado das pastilhas de freio regularmente." }
-    ],
-    caminhao: [
-        { dica: "Verifique o sistema de freios pneumáticos e o nível de Arla 32 diariamente." },
-        { dica: "Realize a lubrificação dos pontos de graxa do chassi conforme o manual." }
-    ]
-};
+const dicasManutencao = { /* ... seu objeto de dicas ... */ };
 
 
 // === ROTAS DA API ===
 
 // Rota de Teste
 app.get('/api', (req, res) => {
-    res.json({ message: "API da Garagem Interativa está funcionando!" });
+    res.json({ message: "API da Garagem Interativa está funcionando e conectada ao DB!" });
 });
 
-// Rota para Veículos em Destaque
-app.get('/api/garagem/veiculos-destaque', (req, res) => {
-    console.log('GET /api/garagem/veiculos-destaque - Recebido!');
-    res.json(veiculosDestaque);
+// Rota para Veículos em Destaque (AGORA BUSCANDO DO BANCO DE DADOS!)
+app.get('/api/garagem/veiculos-destaque', async (req, res) => {
+    console.log('GET /api/garagem/veiculos-destaque - Recebido! Buscando no DB...');
+    try {
+        // Usa o Model 'Veiculo' para encontrar (.find()) todos os documentos na coleção.
+        const veiculosDoBanco = await Veiculo.find({});
+        
+        // Se não encontrar nenhum, pode-se inserir os dados iniciais uma única vez
+        if (veiculosDoBanco.length === 0) {
+            console.log("Banco de veículos vazio. Inserindo dados iniciais...");
+            const veiculosIniciais = [
+                { id: 1, modelo: "Honda Civic G10", ano: 2021, destaque: "Confiabilidade e Economia", imagemUrl: "imagens/civic-removebg-preview.png" },
+                { id: 2, modelo: "Pagani Huayra", ano: 2020, destaque: "Performance Extrema", imagemUrl: "imagens/paganiRosa-removebg-preview.png" },
+                { id: 3, modelo: "Mercedes-Benz Actros", ano: 2022, destaque: "Robustez para Longas Distâncias", imagemUrl: "imagens/caminhão-removebg-preview.png" },
+                { id: 4, modelo: "Kawasaki Ninja ZX-6R", ano: 2023, destaque: "Agilidade e Estilo Esportivo", imagemUrl: "imagens/kawasaki-Photoroom.png" }
+            ];
+            await Veiculo.insertMany(veiculosIniciais);
+            console.log("Dados iniciais inseridos!");
+            res.json(veiculosIniciais);
+        } else {
+            res.json(veiculosDoBanco);
+        }
+
+    } catch (error) {
+        console.error("Erro ao buscar veículos no banco de dados:", error);
+        res.status(500).json({ message: "Erro ao buscar dados dos veículos." });
+    }
 });
 
-// Rota para Serviços Oferecidos
+// Rota para Serviços Oferecidos (continua usando dados mockados por enquanto)
 app.get('/api/garagem/servicos-oferecidos', (req, res) => {
     console.log('GET /api/garagem/servicos-oferecidos - Recebido!');
     res.json(servicosOferecidos);
 });
 
-// Rota para Viagens Populares
+// ... (Suas outras rotas: /api/viagens-populares, /api/dicas-manutencao, /clima) ...
+// Nenhuma alteração necessária nelas por agora.
 app.get('/api/viagens-populares', (req, res) => {
     console.log('GET /api/viagens-populares - Recebido!');
     res.json(viagensPopulares);
 });
 
-// Rota para Dicas de Manutenção (Gerais e por tipo)
-app.get('/api/dicas-manutencao/:tipo?', (req, res) => {
-    const tipo = req.params.tipo;
-    console.log(`GET /api/dicas-manutencao/${tipo || ''} - Recebido!`);
-    if (tipo && dicasManutencao[tipo]) {
-        res.json(dicasManutencao[tipo]);
-    } else if (!tipo) {
-        res.json(dicasManutencao.gerais);
-    } else {
-        res.status(404).json({ error: `Nenhuma dica encontrada para o tipo '${tipo}'. Tipos válidos: carro, moto, caminhao.` });
-    }
-});
+app.get('/api/dicas-manutencao/:tipo?', (req, res) => { /* ... seu código ... */ });
 
-// Rota para Previsão do Tempo (Proxy para OpenWeatherMap)
-app.get('/clima', async (req, res) => {
-    const cidade = req.query.cidade;
-    const apiKey = process.env.OPENWEATHER_API_KEY;
-    console.log(`GET /clima?cidade=${cidade} - Recebido!`);
-
-    if (!apiKey) {
-        console.error("ERRO: OPENWEATHER_API_KEY não encontrada no .env");
-        return res.status(500).json({ message: "Chave da API do OpenWeather não está configurada no servidor." });
-    }
-    if (!cidade) {
-        return res.status(400).json({ message: "O parâmetro 'cidade' é obrigatório." });
-    }
-
-    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`;
-
-    try {
-        const response = await axios.get(url);
-        res.json(response.data);
-    } catch (error) {
-        if (error.response) {
-            console.error("Erro da API OpenWeather:", error.response.data);
-            res.status(error.response.status).json({ message: error.response.data.message || "Erro ao buscar dados do clima (cidade não encontrada?)." });
-        } else {
-            console.error("Erro na requisição para OpenWeather:", error.message);
-            res.status(500).json({ message: "Erro interno no servidor ao contatar a API de clima." });
-        }
-    }
-});
+app.get('/clima', async (req, res) => { /* ... seu código ... */ });
 
 
 // === INICIALIZAÇÃO DO SERVIDOR ===
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor da GARAGEM INTERATIVA rodando na porta ${PORT}`);
-    console.log(`Acesse a API de teste em http://localhost:${PORT}/api`);
-});
+// Criamos uma função para garantir que o servidor só inicie APÓS a conexão com o banco.
+const startServer = async () => {
+    await connectDB(); // Primeiro, tenta conectar ao banco.
+
+    app.listen(PORT, () => {
+        console.log(`✅ Servidor da GARAGEM INTERATIVA rodando na porta ${PORT}`);
+        console.log(`Acesse a API de teste em http://localhost:${PORT}/api`);
+    });
+};
+
+// Chama a função para iniciar todo o processo.
+startServer();
