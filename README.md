@@ -1,207 +1,133 @@
-# 🚗 Garagem Interativa Full-Stack com Backend e Planejador de Viagem
+# 🚗 Garagem Interativa Full-Stack com Node.js, Express e MongoDB
 
-Bem-vindo à Garagem Interativa! Este é um projeto web que simula uma garagem dinâmica, evoluído para uma aplicação full-stack. O frontend é construído com HTML5, CSS3 e JavaScript puro (Vanilla JS), enquanto o backend robusto é desenvolvido em Node.js com Express. A aplicação permite aos usuários criar, personalizar e interagir com diversos tipos de veículos, gerenciar seus históricos de manutenção e planejar viagens com uma previsão do tempo interativa, alimentada por nossa própria API backend. Para uma experiência contínua, todos os dados dos veículos e preferências de visualização são persistidos no navegador do usuário utilizando a API LocalStorage.
+Bem-vindo à Garagem Interativa! Este é um projeto web que simula uma garagem dinâmica, evoluído para uma aplicação full-stack. O frontend é construído com HTML5, CSS3 e JavaScript puro (Vanilla JS), enquanto o backend robusto é desenvolvido em Node.js com Express e se conecta a um banco de dados **MongoDB Atlas** para persistência de dados. A aplicação permite aos usuários criar, visualizar, deletar e interagir com diversos tipos de veículos, gerenciar seus históricos de manutenção e planejar viagens com uma previsão do tempo interativa.
 
 ## 📜 Descrição Detalhada
 
-A Garagem Interativa oferece uma simulação rica do gerenciamento de uma coleção pessoal de veículos. Os usuários podem mergulhar em uma experiência interativa, onde cada veículo (Carro, Carro Esportivo, Caminhão, Moto) é modelado com princípios de Programação Orientada a Objetos em JavaScript. A herança é utilizada para compartilhar funcionalidades comuns, enquanto características específicas de cada tipo de veículo são implementadas em suas respectivas classes.
+A Garagem Interativa oferece uma simulação rica do gerenciamento de uma coleção pessoal de veículos. Os usuários podem mergulhar em uma experiência interativa, onde cada veículo (Carro, Carro Esportivo, Caminhão, Moto) é modelado com princípios de Programação Orientada a Objetos em JavaScript no frontend.
 
-A interface do usuário é projetada para ser intuitiva, com seções dedicadas para cada veículo. Nelas, é possível definir e atualizar informações cruciais como modelo e cor, além de executar uma gama de ações: ligar/desligar o motor, acelerar, frear, pintar o veículo com uma nova cor ou reabastecer o tanque. Veículos especializados, como o Carro Esportivo, vêm com a funcionalidade de ativar/desativar o turbo para um impulso extra de velocidade, e o Caminhão permite simular o carregamento e descarregamento de peso, o que realisticamente afeta seu desempenho de aceleração e frenagem.
+**O coração da aplicação é a sua arquitetura Cliente-Servidor robusta.** O backend, construído com Node.js e Express, fornece uma API RESTful completa. Esta API gerencia todas as operações de **CRUD (Create, Read, Update, Delete)** para a frota de veículos, salvando os dados permanentemente em um banco de dados NoSQL (MongoDB). Além disso, o backend atua como um **proxy seguro para a API externa OpenWeatherMap**, protegendo a chave da API (API Key) no ambiente do servidor.
 
-Além da interação direta com os veículos, o projeto se destaca por um sistema completo de gerenciamento de manutenção. Os usuários podem registrar serviços de manutenção que já foram concluídos, incluindo data, tipo, custo e descrição, e também agendar manutenções futuras com observações. Todas essas informações são claramente visualizadas em listas organizadas por veículo e em uma lista consolidada de agendamentos futuros para toda a garagem na página inicial.
+No frontend, os usuários podem adicionar novos veículos à sua frota através de um formulário intuitivo e visualizar todos os veículos cadastrados em uma tabela organizada. A funcionalidade de deletar permite a remoção de veículos com uma simples confirmação. A página inicial também exibe dinamicamente os veículos mais recentes como "destaques", buscando essa informação diretamente do banco de dados.
 
-**Um avanço crucial neste projeto é sua arquitetura Cliente-Servidor robusta.** O backend, construído com Node.js e Express, não se limita a servir arquivos estáticos; ele também fornece dados dinâmicos através de uma API RESTful. Esta API serve informações como dicas de manutenção, listas de serviços oferecidos, veículos em destaque na garagem e inspirações para viagens. Mais significativamente, o backend atua como um **proxy seguro para a API externa OpenWeatherMap**. Isso significa que o componente de planejamento de viagem do frontend consome dados de previsão do tempo de nossa própria API (`/clima`), que, por sua vez, busca os dados da OpenWeatherMap. Essa abordagem protege a chave da API (API Key) do OpenWeatherMap, mantendo-a segura no ambiente do servidor e não expondo-a no código do cliente.
-
-Para garantir que a experiência do usuário seja consistente entre as sessões de navegação, todos os dados dos veículos – incluindo seu estado atual (ligado/desligado, velocidade, nível de combustível), o histórico completo de manutenções realizadas e os agendamentos futuros – bem como as preferências do usuário no planejador de viagem (como a unidade de temperatura preferida) são salvos automaticamente no LocalStorage do navegador. Lembretes de agendamentos próximos são exibidos ao carregar a página inicial, ajudando o usuário a se manter atualizado.
+Para a simulação de interatividade nas páginas de detalhes de cada veículo, o projeto utiliza a API **LocalStorage** do navegador para salvar o estado momentâneo de cada veículo (ligado/desligado, velocidade, etc.), proporcionando uma experiência contínua e interativa sem a necessidade de recarregar a página a cada ação.
 
 ## ✨ Funcionalidades Principais
 
-A Garagem Interativa oferece um conjunto abrangente de funcionalidades:
-
-*   **Criação e Atualização Dinâmica de Veículos:**
-    *   Permite definir ou modificar o modelo e a cor para cada um dos quatro tipos de veículos disponíveis.
-    *   Os dados são persistidos e recarregados, mantendo as personalizações do usuário.
-*   **Interação Detalhada com Veículos:**
-    *   **Funcionalidades Comuns (todos os veículos):** Ligar, Desligar, Acelerar (com feedback visual e sonoro simulado), Frear, Pintar (com escolha de cor) e Abastecer (com entrada de percentual).
-    *   **Carro Esportivo:** Funcionalidades exclusivas de Ativar e Desativar o modo Turbo, afetando a aceleração e o consumo de combustível.
-    *   **Caminhão:** Capacidade de Carregar e Descarregar Carga (em kg), com o peso da carga influenciando a aceleração e a frenagem.
-*   **Sistema Completo de Gerenciamento de Manutenção:**
-    *   Registrar Manutenção Concluída: Inclui data, tipo de serviço, custo e descrição opcional.
-    *   Agendar Manutenção Futura: Inclui data, hora opcional, tipo de serviço e observações opcionais.
-    *   Visualização de Histórico e Agendamentos: Cada página de detalhes do veículo exibe seu histórico de manutenção e agendamentos futuros. A página inicial mostra uma lista consolidada de todos os agendamentos futuros.
-    *   Lembretes de Agendamento: Alertas são exibidos para manutenções agendadas para o dia atual ou o dia seguinte.
+*   **Gerenciamento Completo da Frota com Banco de Dados:**
+    *   **Adicionar Veículos (Create):** Formulário para cadastrar novos veículos (placa, marca, modelo, ano, cor) que são salvos no MongoDB.
+    *   **Listar Veículos (Read):** Tabela na página inicial que exibe todos os veículos cadastrados, buscando os dados em tempo real da API.
+    *   **Deletar Veículos (Delete):** Botão de exclusão para cada veículo na frota, com confirmação do usuário antes da remoção permanente do banco de dados.
 *   **Conteúdo Dinâmico Servido pela API Backend:**
-    *   **Veículos em Destaque:** Uma seção na página inicial exibe uma seleção curada de veículos com suas imagens e características principais.
-    *   **Serviços da Garagem:** Uma lista informativa dos serviços que a "Garagem Interativa" oferece.
-    *   **Dicas de Manutenção:** Acesso a dicas de manutenção gerais e dicas específicas filtradas por tipo de veículo (carro, moto, caminhão).
-    *   **Inspiração para Viagem:** Apresenta cards com destinos populares para viagens rodoviárias, incluindo imagens e descrições.
-*   **Planejador de Viagem Avançado (Integrado com API Backend Proxy):**
-    *   Busca de Previsão do Tempo: Permite ao usuário digitar o nome de qualquer cidade para obter a previsão.
-    *   Seleção de Período de Previsão: Opções para visualizar a previsão para 1, 3 ou 5 dias.
-    *   Detalhes Diários Expansíveis: Ao clicar em um card de previsão diária, o usuário pode ver uma previsão horária detalhada para aquele dia.
-    *   Destaque Visual de Condições Climáticas: Opções para destacar visualmente dias com previsão de chuva, temperaturas abaixo de um limite especificado ou temperaturas acima de um limite especificado.
-    *   Alternador de Unidade de Temperatura: Permite alternar entre Celsius (°C) e Fahrenheit (°F), com a preferência sendo salva no LocalStorage.
-*   **API de Detalhes Extras do Veículo:**
-    *   Um botão "Ver Detalhes Extras (API)" em cada página de veículo busca e exibe informações adicionais simuladas (como valor FIPE, recalls, consumo médio) a partir de dados mockados no frontend (para simular uma API externa mais complexa).
-*   **Persistência de Dados Robusta:**
-    *   Utilização intensiva da API LocalStorage para salvar o estado completo da garagem: todos os veículos, seus atributos (modelo, cor, status, velocidade, combustível), histórico de manutenção, agendamentos e preferências do usuário.
-*   **Interface de Usuário Responsiva e Interativa:**
-    *   Design limpo e organizado com feedback visual para ações do usuário.
-    *   Animações simples (ex: barra de velocidade, efeitos de aceleração/frenagem) para melhorar a experiência.
-    *   Navegação clara entre a página inicial e as páginas de detalhes de cada veículo.
+    *   **Veículos em Destaque:** A seção de destaques é alimentada pelos veículos mais recentes cadastrados no banco de dados.
+    *   **Dicas de Manutenção e Serviços:** Listas informativas servidas pelo backend.
+*   **Planejador de Viagem Avançado (com Backend Proxy):**
+    *   Busca de Previsão do Tempo para qualquer cidade, com opções de período (1, 3, 5 dias).
+    *   Alternador de Unidade de Temperatura (°C/°F) com preferência salva no LocalStorage.
+    *   Destaques visuais para condições climáticas específicas.
+*   **Interação Detalhada com Veículos (Simulação no Frontend):**
+    *   Páginas dedicadas para cada tipo de veículo (Carro, Esportivo, Caminhão, Moto).
+    *   Ações como Ligar, Desligar, Acelerar, Frear, e habilidades especiais (Turbo, Carregar Carga).
+    *   Gerenciamento de manutenção (agendamento e registro) salvo via LocalStorage.
+*   **Persistência de Dados Híbrida:**
+    *   **MongoDB Atlas:** Usado como a fonte da verdade para os dados da frota de veículos (a lista principal).
+    *   **LocalStorage API:** Usado para salvar o estado da *simulação* interativa (velocidade, combustível, etc.) nas páginas de detalhes, proporcionando resposta instantânea sem sobrecarregar o banco de dados com dados voláteis.
 
 ## 🛠️ Tecnologias Utilizadas
 
 *   **Frontend:**
-    *   **HTML5:** Estrutura semântica das páginas web.
-    *   **CSS3:** Estilização e layout, incluindo Flexbox e Grid para responsividade.
-    *   **JavaScript (ES6+ Vanilla JS):** Lógica de toda a interface, interações, manipulação do DOM e consumo de APIs.
-    *   **Programação Orientada a Objetos (POO):** Classes para modelar Veículos, Manutenção e a própria Garagem.
-    *   **LocalStorage API:** Para persistência de dados no navegador do cliente.
-    *   **Fetch API:** Para realizar requisições HTTP ao backend.
+    *   HTML5, CSS3, JavaScript (ES6+ Vanilla JS)
+    *   Programação Orientada a Objetos (POO)
+    *   Fetch API, LocalStorage API
 *   **Backend:**
-    *   **Node.js:** Ambiente de execução para o JavaScript no lado do servidor.
-    *   **Express.js:** Framework minimalista para Node.js, usado para criar o servidor web e as rotas da API RESTful.
-    *   **Axios:** Cliente HTTP baseado em Promises para realizar a comunicação do backend com a API externa OpenWeatherMap.
-    *   **`cors` (middleware):** Para habilitar o Cross-Origin Resource Sharing, permitindo que o frontend (rodando em um domínio/porta diferente) acesse a API backend.
-    *   **`dotenv` (módulo):** Para gerenciar variáveis de ambiente de forma segura, como a chave da API OpenWeatherMap, mantendo-as fora do código-fonte.
+    *   **Node.js:** Ambiente de execução do servidor.
+    *   **Express.js:** Framework para criação da API RESTful.
+    *   **MongoDB Atlas:** Banco de dados NoSQL como serviço para persistência de dados.
+    *   **Mongoose:** ODM (Object Data Modeling) para modelar e interagir com o MongoDB de forma elegante.
+    *   **Axios:** Cliente HTTP para comunicação com a API OpenWeatherMap.
+    *   `cors` e `dotenv`: Middlewares essenciais para segurança e gerenciamento de ambiente.
 
 ## 🚀 Como Executar o Projeto Localmente
 
-Com a arquitetura full-stack, o projeto requer a execução do servidor backend e o acesso ao frontend através de um navegador.
-
 ### Pré-requisitos
-*   **Node.js e npm:** Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina. O npm (Node Package Manager) vem junto com o Node.js. Você pode verificar a instalação abrindo um terminal e digitando `node -v` e `npm -v`.
-*   **Chave de API da OpenWeatherMap:** Você precisará de uma chave de API gratuita da [OpenWeatherMap](https://openweathermap.org/appid) para que a funcionalidade de previsão do tempo funcione.
+*   **Node.js e npm:** [Instale o Node.js](https://nodejs.org/).
+*   **Conta no MongoDB Atlas:** Crie uma conta gratuita no [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) e configure um cluster.
+*   **Chave de API da OpenWeatherMap:** Obtenha uma chave gratuita da [OpenWeatherMap](https://openweathermap.org/appid).
 
 ### Passos para Configuração e Execução
 
 1.  **Clone o Repositório:**
-    Obtenha uma cópia local do projeto. Se você tiver Git instalado, use:
     ```bash
-    git clone https://github.com/KamillaMariaR/carros-v2-09-04-2025.git
-    ```
-    Ou baixe o ZIP do repositório e extraia-o.
-
-2.  **Navegue até a Pasta do Projeto:**
-    Abra seu terminal ou prompt de comando e navegue até o diretório raiz do projeto clonado/extraído:
-    ```bash
-    cd carros-v2-09-04-2025
+    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+    cd SEU_REPOSITORIO
     ```
 
-3.  **Instale as Dependências do Backend:**
-    Dentro da pasta do projeto, execute o comando abaixo para instalar todos os pacotes Node.js listados no arquivo `package.json` (como Express, Axios, CORS, Dotenv):
+2.  **Instale as Dependências:**
     ```bash
     npm install
     ```
 
-4.  **Configure a Chave da API OpenWeatherMap:**
-    *   Na raiz do projeto (mesmo nível que `server.js` e `package.json`), crie um arquivo chamado `.env`.
-    *   Dentro deste arquivo `.env`, adicione a seguinte linha, substituindo `SUA_CHAVE_AQUI` pela sua chave de API real da OpenWeatherMap:
+3.  **Configure as Variáveis de Ambiente:**
+    *   Na raiz do projeto, crie um arquivo chamado `.env`.
+    *   Dentro do `.env`, adicione as seguintes linhas, substituindo pelos seus valores:
         ```env
+        # Sua string de conexão do MongoDB Atlas (Vá em seu cluster > Connect > Drivers)
+        MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/suaDatabase?retryWrites=true&w=majority
+
+        # Sua chave da API da OpenWeatherMap
         OPENWEATHER_API_KEY=SUA_CHAVE_AQUI
         ```
-        (Nota: No seu `server.js` você está usando `process.env.OPENWEATHER_API_KEY`. Certifique-se de que o nome da variável no arquivo `.env` seja `OPENWEATHER_API_KEY` e não `OPENWEATHER_API_KEY_BACKEND` como estava no README anterior, para corresponder ao código em `server.js`.)
 
-5.  **Inicie o Servidor Backend:**
-    No seu terminal, dentro da pasta raiz do projeto, execute o comando:
+4.  **Inicie o Servidor Backend:**
     ```bash
     node server.js
     ```
-    Se tudo estiver correto, você verá uma mensagem como:
-    `🚀 Servidor da GARAGEM INTERATIVA rodando na porta 3001`
-    (ou a porta definida pela variável de ambiente `PORT`). **Mantenha este terminal aberto e rodando enquanto utiliza a aplicação.**
+    Você deverá ver a mensagem: `✅ Servidor da GARAGEM INTERATIVA rodando na porta 3001` e `🚀 Conectado ao MongoDB Atlas via Mongoose!`. Mantenha este terminal aberto.
 
-6.  **Acesse o Frontend no Navegador:**
-    *   A maneira mais simples é abrir diretamente o arquivo `index.html` no seu navegador.
-    *   Para uma melhor experiência de desenvolvimento, especialmente com JavaScript, recomenda-se usar uma extensão como o [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) para Visual Studio Code. Se você tiver essa extensão instalada, clique com o botão direito no arquivo `index.html` dentro do VS Code e selecione "Open with Live Server".
-    *   O site abrirá no seu navegador (geralmente em um endereço como `http://127.0.0.1:5500/index.html` se estiver usando o Live Server). A aplicação frontend fará requisições ao seu servidor backend local (que está rodando na porta 3001).
-
-Agora você deve conseguir interagir com todas as funcionalidades da Garagem Interativa!
+5.  **Acesse o Frontend no Navegador:**
+    *   Abra o arquivo `index.html` diretamente no seu navegador.
+    *   Para uma melhor experiência, use a extensão [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) no VS Code.
 
 ## 📋 Endpoints da API Backend
 
-O servidor backend (`server.js`) expõe os seguintes endpoints que são consumidos pela aplicação frontend:
+| Método   | Endpoint                          | Descrição                                         |
+| :------- | :-------------------------------- | :------------------------------------------------ |
+| `POST`   | `/api/veiculos`                   | Cria um novo veículo no banco de dados.           |
+| `GET`    | `/api/veiculos`                   | Lista todos os veículos do banco de dados.        |
+| `DELETE` | `/api/veiculos/:id`               | Deleta um veículo específico pelo seu ID.         |
+| `GET`    | `/api/garagem/veiculos-destaque`  | Retorna os 4 veículos mais recentes como destaque. |
+| `GET`    | `/api/dicas-manutencao/:tipo?`    | Retorna dicas de manutenção (gerais ou por tipo). |
+| `GET`    | `/clima`                          | Proxy para a API OpenWeatherMap.                  |
+| `GET`    | `/api/garagem/servicos-oferecidos`| Retorna a lista de serviços oferecidos.           |
 
-| Método HTTP | Caminho (Endpoint)                       | Descrição Detalhada                                                                                                | Parâmetros de Query                               |
-| :---------- | :--------------------------------------- | :----------------------------------------------------------------------------------------------------------------- | :------------------------------------------------ |
-| `GET`       | `/api`                                   | Rota de teste para verificar se a API está funcionando. Retorna uma mensagem JSON de sucesso.                        | Nenhum                                            |
-| `GET`       | `/clima`                                 | Atua como proxy para a API OpenWeatherMap. Retorna dados de previsão do tempo para a cidade especificada.              | `cidade` (obrigatório): Nome da cidade.             |
-| `GET`       | `/api/dicas-manutencao`                  | Retorna uma lista de dicas de manutenção gerais, aplicáveis a todos os tipos de veículos.                             | Nenhum                                            |
-| `GET`       | `/api/dicas-manutencao/:tipoVeiculo`     | Retorna dicas de manutenção específicas para o tipo de veículo fornecido (`carro`, `moto`, `caminhao`).                 | `:tipoVeiculo` (parâmetro de rota)                |
-| `GET`       | `/api/garagem/veiculos-destaque`         | Retorna uma lista de objetos, cada um representando um veículo em destaque para exibição na página inicial.            | Nenhum                                            |
-| `GET`       | `/api/garagem/servicos-oferecidos`       | Retorna uma lista de objetos, cada um descrevendo um serviço oferecido pela garagem, incluindo nome, descrição e preço. | Nenhum                                            |
-| `GET`       | `/api/viagens-populares`                 | Retorna uma lista de objetos, cada um representando um destino de viagem popular com imagem, descrição e país.         | Nenhum                                            |
-## 📂 Estrutura Detalhada do Projeto
+## 📂 Estrutura do Projeto
 
-A seguir, a organização dos principais arquivos e pastas do projeto:
+*   `models/`
+    *   `veiculo.js`: Define o Schema do Mongoose para os documentos de veículos no MongoDB.
+*   `js/`
+    *   Contém os scripts do frontend (classes `Veiculo`, `Garagem`, `main.js`, etc.).
+*   `server.js`: O coração do backend.
+*   `package.json`: Define as dependências do projeto.
+*   `.env`: Armazena as chaves secretas e variáveis de ambiente.
+*   `index.html` e `detalhes_*.html`: Páginas do frontend.
+*   `style.css`: Folha de estilos.
 
-*   `carros-v2-09-04-2025/` (Diretório Raiz do Projeto)
-    *   `.env` : Arquivo para configurar variáveis de ambiente, como a chave da API OpenWeatherMap. (Importante: este arquivo não deve ser enviado para repositórios públicos se contiver chaves secretas).
-    *   `node_modules/` : Pasta criada pelo `npm` que armazena todas as dependências do backend (Express, Axios, etc.).
-    *   `package.json` : Arquivo de metadados do projeto Node.js, lista as dependências e scripts.
-    *   `package-lock.json` : Registra as versões exatas das dependências instaladas, garantindo consistência.
-    *   `server.js` : O coração do backend, implementado com Node.js e Express, responsável por servir a API e fazer proxy para serviços externos.
-    *   `README.md` : Este arquivo de documentação que você está lendo.
-    *   **Arquivos HTML (Frontend):**
-        *   `index.html` : A página inicial da Garagem Interativa.
-        *   `detalhes_carro.html` : Página dedicada à interação com o veículo Carro.
-        *   `detalhes_esportivo.html` : Página dedicada à interação com o Carro Esportivo.
-        *   `detalhes_caminhao.html` : Página dedicada à interação com o Caminhão.
-        *   `detalhes_moto.html` : Página dedicada à interação com a Moto.
-    *   **Recursos Estáticos (Frontend):**
-        *   `style.css` : Folha de estilos CSS principal, aplicada a todas as páginas HTML.
-        *   `imagens/` : Diretório contendo as imagens dos veículos e outros elementos visuais.
-            *   `civic-removebg-preview.png`
-            *   `paganiRosa-removebg-preview.png`
-            *   `caminhão-removebg-preview.png`
-            *   `kawasaki-Photoroom.png`
-            *   *(outras imagens, se houver)*
-        *   `js/` : Diretório contendo todos os scripts JavaScript do lado do cliente (frontend).
-            *   `veiculo.js` : Classe base para todos os tipos de veículos.
-            *   `carro.js` : Classe para o veículo Carro (herda de `Veiculo`).
-            *   `carroEsportivo.js` : Classe para o Carro Esportivo (herda de `Carro`).
-            *   `caminhao.js` : Classe para o Caminhão (herda de `Carro`).
-            *   `moto.js` : Classe para a Moto (herda de `Carro`).
-            *   `manutencao.js` : Classe para representar registros de manutenção.
-            *   `garagem.js` : Classe principal que gerencia a coleção de veículos, interações, persistência e comunicação com a UI.
-            *   `main.js` : Script de inicialização e lógica de eventos para a `index.html`.
-            *   `main_detalhes.js` : Script de inicialização e lógica de eventos para as páginas `detalhes_*.html`.
+## 💡 Melhorias Futuras
 
-## 💡 Melhorias Futuras e Possíveis Extensões
+*   **Implementar a funcionalidade de Update (Editar):** Permitir que o usuário modifique os dados de um veículo já cadastrado.
+*   **Autenticação de Usuário:** Criar um sistema de login para que cada usuário tenha sua própria garagem.
+*   **Migrar Simulação para o Backend:** Salvar o estado interativo dos veículos (velocidade, combustível) no banco de dados para uma experiência multi-dispositivo.
+*   **Deployment:** Publicar a aplicação em uma plataforma como Render ou Heroku.
 
-Este projeto serve como uma base sólida para muitas outras funcionalidades e aprendizados. Algumas ideias incluem:
-
-*   **Persistência de Dados no Backend:**
-    *   Substituir os dados "mock" no `server.js` (como `veiculosDestaque`, `servicosOferecidos`, etc.) e o LocalStorage por um banco de dados real (ex: MongoDB com Mongoose, PostgreSQL com Sequelize, ou SQLite para simplicidade).
-    *   Permitir que os dados da garagem do usuário (veículos, manutenções) sejam salvos no servidor associados a uma conta de usuário.
-*   **Autenticação e Contas de Usuário:**
-    *   Implementar um sistema de registro e login de usuários (ex: usando JWT - JSON Web Tokens).
-    *   Cada usuário teria sua própria garagem salva no banco de dados.
-*   **Testes Automatizados:**
-    *   Escrever testes unitários (ex: com Jest ou Mocha) para as classes JavaScript e para as funções do backend.
-    *   Implementar testes de integração para as rotas da API.
-    *   Considerar testes end-to-end (ex: com Cypress ou Puppeteer) para a interface do usuário.
-*   **Deployment da Aplicação:**
-    *   Publicar o backend e o frontend em uma plataforma de hospedagem (ex: Render, Heroku, Vercel para frontend e backend separados, ou uma VM na AWS/Google Cloud/Azure).
-*   **Melhorias na Interface e Experiência do Usuário (UI/UX):**
-    *   Utilizar um framework/biblioteca frontend (React, Vue, Angular, Svelte) para componentização e gerenciamento de estado mais avançado, se o projeto crescer.
-    *   Adicionar mais animações, transições e feedback visual.
-    *   Implementar um design mais responsivo para dispositivos móveis.
-    *   Permitir upload de imagens para os veículos.
-*   **Funcionalidades Adicionais:**
-    *   Comparação de veículos.
-    *   Cálculo de custos de viagem (combustível, pedágios).
-    *   Integração com mapas para visualização de rotas.
-    *   Notificações push para lembretes de manutenção.
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a [Licença MIT](https://opensource.org/licenses/MIT). Veja o arquivo `LICENSE` (se existir) para mais detalhes.
+Este projeto está licenciado sob a [Licença MIT](https://opensource.org/licenses/MIT).
 
 ## 📞 Contato
 
-Desenvolvido por **KamillaMariaR**.
-*   GitHub: [KamillaMariaR](https://github.com/KamillaMariaR)
+Desenvolvido com ❤️ por **KamillaMariaR**.
+
+*   **GitHub:** [KamillaMariaR](https://github.com/KamillaMariaR)
 
 Sinta-se à vontade para contribuir, reportar issues ou sugerir melhorias!
