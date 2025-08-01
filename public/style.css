@@ -1052,3 +1052,53 @@ nav.main-nav a {
 nav.main-nav a:hover, nav.main-nav a.active {
     background-color: #e91e63; /* Cor principal clara */
 }
+/* style.css - Adicionar no final */
+
+#tabela-veiculos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+#tabela-veiculos th, #tabela-veiculos td {
+    border: 1px solid #f8bbd0;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+#tabela-veiculos th {
+    background-color: #fce4ec;
+    color: #c2185b;
+    font-weight: bold;
+}
+
+#tabela-veiculos tbody tr:nth-child(even) {
+    background-color: #fff8fa;
+}
+
+#tabela-veiculos tbody tr:hover {
+    background-color: #fce4ec;
+}
+
+#tabela-veiculos .loading-row td, #tabela-veiculos .error-row td {
+    text-align: center;
+    font-style: italic;
+    padding: 20px;
+    color: #666;
+}
+
+#tabela-veiculos .error-row td {
+    color: #d32f2f;
+    font-weight: bold;
+}/* style.css - Adicionar no final */
+.btn-delete {
+    background-color: #f44336; /* Vermelho */
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin: 0;
+}
+
+.btn-delete:hover {
+    background-color: #d32f2f;
+}
