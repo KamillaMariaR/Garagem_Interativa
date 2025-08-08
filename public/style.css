@@ -1102,3 +1102,23 @@ nav.main-nav a:hover, nav.main-nav a.active {
 .btn-delete:hover {
     background-color: #d32f2f;
 }
+
+.btn-edit {
+    background-color: #0288d1; /* Azul */
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin: 0 5px 0 0; /* Adiciona margem à direita */
+}
+
+.btn-edit:hover {
+    background-color: #01579b;
+}
+
+.btn-cancel-edit {
+    background-color: #757575; /* Cinza */
+    display: none; /* Começa escondido */
+}
+
+.btn-cancel-edit:hover {
+     background-color: #424242;
+}
