@@ -1,14 +1,14 @@
 # 🚗 Garagem Interativa Full-Stack com Node.js, Express e MongoDB
 
-Bem-vindo à Garagem Interativa! Este é um projeto web que simula uma garagem dinâmica, evoluído para uma aplicação full-stack. O frontend é construído com HTML5, CSS3 e JavaScript puro (Vanilla JS), enquanto o backend robusto é desenvolvido em Node.js com Express e se conecta a um banco de dados **MongoDB Atlas** para persistência de dados. A aplicação permite aos usuários criar, visualizar, deletar e interagir com diversos tipos de veículos, gerenciar seus históricos de manutenção e planejar viagens com uma previsão do tempo interativa.
+Bem-vindo à Garagem Interativa! Este é um projeto web que simula uma garagem dinâmica, evoluído para uma aplicação full-stack. O frontend é construído com HTML5, CSS3 e JavaScript puro (Vanilla JS), enquanto o backend robusto é desenvolvido em Node.js com Express e se conecta a um banco de dados **MongoDB Atlas** para persistência de dados. A aplicação permite aos usuários criar, visualizar, editar, deletar e interagir com diversos tipos de veículos, gerenciar seus históricos de manutenção e planejar viagens com uma previsão do tempo interativa.
 
 ## 📜 Descrição Detalhada
 
 A Garagem Interativa oferece uma simulação rica do gerenciamento de uma coleção pessoal de veículos. Os usuários podem mergulhar em uma experiência interativa, onde cada veículo (Carro, Carro Esportivo, Caminhão, Moto) é modelado com princípios de Programação Orientada a Objetos em JavaScript no frontend.
 
-**O coração da aplicação é a sua arquitetura Cliente-Servidor robusta.** O backend, construído com Node.js e Express, fornece uma API RESTful completa. Esta API gerencia todas as operações de **CRUD (Create, Read, Update, Delete)** para a frota de veículos, salvando os dados permanentemente em um banco de dados NoSQL (MongoDB). Além disso, o backend atua como um **proxy seguro para a API externa OpenWeatherMap**, protegendo a chave da API (API Key) no ambiente do servidor.
+**O coração da aplicação é a sua arquitetura Cliente-Servidor robusta.** O backend, construído com Node.js e Express, fornece uma API RESTful completa. Esta API gerencia integralmente as operações de **CRUD (Create, Read, Update, Delete)** para a frota de veículos, salvando os dados permanentemente em um banco de dados NoSQL (MongoDB). A interface permite a edição fluida dos veículos, reutilizando o formulário de adição para uma experiência de usuário consistente. Além disso, o backend atua como um **proxy seguro para a API externa OpenWeatherMap**, protegendo a chave da API (API Key) no ambiente do servidor.
 
-No frontend, os usuários podem adicionar novos veículos à sua frota através de um formulário intuitivo e visualizar todos os veículos cadastrados em uma tabela organizada. A funcionalidade de deletar permite a remoção de veículos com uma simples confirmação. A página inicial também exibe dinamicamente os veículos mais recentes como "destaques", buscando essa informação diretamente do banco de dados.
+No frontend, os usuários podem adicionar novos veículos à sua frota através de um formulário intuitivo, visualizar e editar os veículos cadastrados em uma tabela organizada. A funcionalidade de deletar permite a remoção de veículos com uma simples confirmação. A página inicial também exibe de forma fixa os quatro veículos originais do projeto como "destaques", buscando essa informação diretamente da API.
 
 Para a simulação de interatividade nas páginas de detalhes de cada veículo, o projeto utiliza a API **LocalStorage** do navegador para salvar o estado momentâneo de cada veículo (ligado/desligado, velocidade, etc.), proporcionando uma experiência contínua e interativa sem a necessidade de recarregar a página a cada ação.
 
@@ -17,9 +17,10 @@ Para a simulação de interatividade nas páginas de detalhes de cada veículo, 
 *   **Gerenciamento Completo da Frota com Banco de Dados:**
     *   **Adicionar Veículos (Create):** Formulário para cadastrar novos veículos (placa, marca, modelo, ano, cor) que são salvos no MongoDB.
     *   **Listar Veículos (Read):** Tabela na página inicial que exibe todos os veículos cadastrados, buscando os dados em tempo real da API.
+    *   **Editar Veículos (Update):** Botão de edição para cada veículo que preenche o formulário principal, permitindo a modificação de dados e salvando as alterações no banco.
     *   **Deletar Veículos (Delete):** Botão de exclusão para cada veículo na frota, com confirmação do usuário antes da remoção permanente do banco de dados.
 *   **Conteúdo Dinâmico Servido pela API Backend:**
-    *   **Veículos em Destaque:** A seção de destaques é alimentada pelos veículos mais recentes cadastrados no banco de dados.
+    *   **Veículos em Destaque:** A seção de destaques exibe uma lista fixa e curada dos quatro veículos principais da garagem.
     *   **Dicas de Manutenção e Serviços:** Listas informativas servidas pelo backend.
 *   **Planejador de Viagem Avançado (com Backend Proxy):**
     *   Busca de Previsão do Tempo para qualquer cidade, com opções de período (1, 3, 5 dias).
@@ -90,15 +91,16 @@ Para a simulação de interatividade nas páginas de detalhes de cada veículo, 
 
 ## 📋 Endpoints da API Backend
 
-| Método   | Endpoint                          | Descrição                                         |
-| :------- | :-------------------------------- | :------------------------------------------------ |
-| `POST`   | `/api/veiculos`                   | Cria um novo veículo no banco de dados.           |
-| `GET`    | `/api/veiculos`                   | Lista todos os veículos do banco de dados.        |
-| `DELETE` | `/api/veiculos/:id`               | Deleta um veículo específico pelo seu ID.         |
-| `GET`    | `/api/garagem/veiculos-destaque`  | Retorna os 4 veículos mais recentes como destaque. |
-| `GET`    | `/api/dicas-manutencao/:tipo?`    | Retorna dicas de manutenção (gerais ou por tipo). |
-| `GET`    | `/clima`                          | Proxy para a API OpenWeatherMap.                  |
-| `GET`    | `/api/garagem/servicos-oferecidos`| Retorna a lista de serviços oferecidos.           |
+| Método   | Endpoint                          | Descrição                                        |
+| :------- | :-------------------------------- | :----------------------------------------------- |
+| `POST`   | `/api/veiculos`                   | Cria um novo veículo no banco de dados.          |
+| `GET`    | `/api/veiculos`                   | Lista todos os veículos do banco de dados.       |
+| `PUT`    | `/api/veiculos/:id`               | Atualiza os dados de um veículo específico.      |
+| `DELETE` | `/api/veiculos/:id`               | Deleta um veículo específico pelo seu ID.        |
+| `GET`    | `/api/garagem/veiculos-destaque`  | Retorna uma lista fixa de veículos em destaque.  |
+| `GET`    | `/api/dicas-manutencao/:tipo?`    | Retorna dicas de manutenção (gerais ou por tipo).|
+| `GET`    | `/clima`                          | Proxy para a API OpenWeatherMap.                 |
+| `GET`    | `/api/garagem/servicos-oferecidos`| Retorna a lista de serviços oferecidos.          |
 
 ## 📂 Estrutura do Projeto
 
@@ -114,11 +116,9 @@ Para a simulação de interatividade nas páginas de detalhes de cada veículo, 
 
 ## 💡 Melhorias Futuras
 
-*   **Implementar a funcionalidade de Update (Editar):** Permitir que o usuário modifique os dados de um veículo já cadastrado.
 *   **Autenticação de Usuário:** Criar um sistema de login para que cada usuário tenha sua própria garagem.
 *   **Migrar Simulação para o Backend:** Salvar o estado interativo dos veículos (velocidade, combustível) no banco de dados para uma experiência multi-dispositivo.
 *   **Deployment:** Publicar a aplicação em uma plataforma como Render ou Heroku.
-
 
 ## 📄 Licença
 
