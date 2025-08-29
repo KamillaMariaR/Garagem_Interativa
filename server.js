@@ -1,3 +1,5 @@
+// server.js (Completo e Modificado)
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -5,6 +7,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const Veiculo = require('./models/veiculo.js'); 
+const Manutencao = require('./models/Manutencao.js'); // NOVO: Import do modelo de Manutenção
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -94,16 +97,76 @@ app.put('/api/veiculos/:id', async (req, res) => {
 app.delete('/api/veiculos/:id', async (req, res) => {
     console.log(`[DELETE /api/veiculos/${req.params.id}] Requisição recebida.`);
     try {
+        // NOVO: Antes de deletar o veículo, deletar manutenções associadas (boa prática)
+        await Manutencao.deleteMany({ veiculo: req.params.id });
+        
         const veiculoDeletado = await Veiculo.findByIdAndDelete(req.params.id);
         if (!veiculoDeletado) return res.status(404).json({ error: 'Veículo não encontrado.' });
-        res.json({ message: 'Veículo deletado com sucesso!' });
+        
+        res.json({ message: 'Veículo e suas manutenções foram deletados com sucesso!' });
     } catch (error) {
         res.status(500).json({ error: 'Erro interno ao deletar veículo.' });
     }
 });
 
 
-// 2. ROTA DE DESTAQUES (COM A LÓGICA FIXA)
+// 2. ROTAS DE MANUTENÇÃO (NOVAS)
+// Rota para CRIAR uma nova manutenção para um veículo específico
+app.post('/api/veiculos/:veiculoId/manutencoes', async (req, res) => {
+    console.log(`[POST /api/veiculos/${req.params.veiculoId}/manutencoes] Requisição para criar manutenção.`);
+    try {
+        const { veiculoId } = req.params;
+
+        // 1. Validar se o veículo existe
+        const veiculo = await Veiculo.findById(veiculoId);
+        if (!veiculo) {
+            return res.status(404).json({ error: 'Veículo não encontrado. Não é possível adicionar manutenção.' });
+        }
+
+        // 2. Criar a nova manutenção associando o ID do veículo
+        const novaManutencao = await Manutencao.create({
+            ...req.body,
+            veiculo: veiculoId // Garante que a manutenção seja associada ao veículo correto
+        });
+
+        // 3. Retornar sucesso
+        res.status(201).json(novaManutencao);
+
+    } catch (error) {
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ error: messages.join(' ') });
+        }
+        console.error("Erro ao criar manutenção:", error);
+        res.status(500).json({ error: 'Erro interno do servidor ao criar manutenção.' });
+    }
+});
+
+// Rota para LISTAR todas as manutenções de um veículo específico
+app.get('/api/veiculos/:veiculoId/manutencoes', async (req, res) => {
+    console.log(`[GET /api/veiculos/${req.params.veiculoId}/manutencoes] Requisição para listar manutenções.`);
+    try {
+        const { veiculoId } = req.params;
+
+        // (Opcional, mas bom) Validar se o veículo existe para dar um feedback melhor
+        const veiculo = await Veiculo.findById(veiculoId);
+        if (!veiculo) {
+            return res.status(404).json({ error: 'Veículo não encontrado.' });
+        }
+
+        // Buscar todas as manutenções que pertencem a este veículo, ordenadas pela mais recente
+        const manutencoes = await Manutencao.find({ veiculo: veiculoId }).sort({ data: -1 });
+
+        res.status(200).json(manutencoes);
+
+    } catch (error) {
+        console.error("Erro ao buscar manutenções:", error);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar manutenções.' });
+    }
+});
+
+
+// 3. ROTA DE DESTAQUES (COM A LÓGICA FIXA)
 app.get('/api/garagem/veiculos-destaque', (req, res) => {
     console.log("[GET /api/garagem/veiculos-destaque] Requisição recebida para destaques FIXOS.");
     const veiculosDestaqueOriginais = [
@@ -116,14 +179,14 @@ app.get('/api/garagem/veiculos-destaque', (req, res) => {
 });
 
 
-// 3. ROTA DE SERVIÇOS
+// 4. ROTA DE SERVIÇOS
 app.get('/api/garagem/servicos-oferecidos', (req, res) => {
     console.log("[GET /api/garagem/servicos-oferecidos] Requisição recebida.");
     res.json(servicosOferecidos);
 });
 
 
-// 4. ROTA DE DICAS
+// 5. ROTA DE DICAS
 app.get('/api/dicas-manutencao/:tipo?', (req, res) => {
     console.log(`[GET /api/dicas-manutencao] Requisição recebida para tipo: ${req.params.tipo || 'geral'}`);
     const tipo = req.params.tipo?.toLowerCase();
@@ -131,7 +194,7 @@ app.get('/api/dicas-manutencao/:tipo?', (req, res) => {
 });
 
 
-// 5. ROTA DE CLIMA
+// 6. ROTA DE CLIMA
 app.get('/clima', async (req, res) => {
     const cidade = req.query.cidade;
     const apiKey = process.env.OPENWEATHER_API_KEY;
