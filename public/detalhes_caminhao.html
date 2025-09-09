@@ -90,7 +90,30 @@
             <h2>Informações e Histórico do Veículo</h2>
             <div id="informacoesVeiculo">Carregando informações do caminhão...</div>
         </section>
+        <!-- NOVO: Seção para Manutenções do Banco de Dados (Adicionar em todos os detalhes_*.html) -->
+        <hr>
 
+        <section id="secao-manutencao-db" class="container" style="display: none;">
+            <h2>Histórico de Manutenções (Banco de Dados)</h2>
+            <p>Registre e visualize o histórico de serviços realizados neste veículo.</p>
+            
+            <!-- Formulário para adicionar nova manutenção -->
+            <form id="form-add-manutencao" class="manutencao-form" style="max-width: 600px; margin: 20px auto;">
+                <h4>Adicionar Nova Manutenção</h4>
+                <input type="text" id="input-manutencao-descricao" placeholder="Descrição do Serviço (Ex: Troca de óleo)" required>
+                <input type="number" id="input-manutencao-custo" placeholder="Custo (R$)" min="0" step="0.01" required>
+                <input type="number" id="input-manutencao-km" placeholder="Quilometragem (Opcional)" min="0">
+                <button type="submit">Adicionar Manutenção</button>
+            </form>
+
+            <!-- Lista onde as manutenções serão exibidas -->
+            <div class="lista-manutencoes-container">
+                <h4>Registros Anteriores:</h4>
+                <ul id="lista-manutencoes">
+                    <!-- O JavaScript irá popular esta lista -->
+                </ul>
+            </div>
+        </section>
     </main>
 
     <!-- Scripts -->

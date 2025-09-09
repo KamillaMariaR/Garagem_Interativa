@@ -2,6 +2,7 @@ body {
     font-family: sans-serif;
     text-align: center;
     background-image: url(imagens/barbie-fundo.jpg);
+    background-repeat: repeat;
     color: #880e4f;
     line-height: 1.4;
 }
@@ -1121,4 +1122,56 @@ nav.main-nav a:hover, nav.main-nav a.active {
 
 .btn-cancel-edit:hover {
      background-color: #424242;
+}
+/* NOVO: Estilos para a Seção de Manutenção do Banco de Dados */
+
+#secao-manutencao-db .not-found {
+    text-align: center;
+    font-style: italic;
+    color: #c2185b;
+    padding: 15px;
+    background-color: #fce4ec;
+    border-radius: 5px;
+    border: 1px dashed #e91e63;
+}
+
+.lista-manutencoes-container {
+    margin-top: 25px;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#lista-manutencoes {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+#lista-manutencoes li {
+    background-color: #fff8fa;
+    border-left: 4px solid #c2185b;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 0 5px 5px 0;
+    line-height: 1.5;
+}
+
+#lista-manutencoes li strong {
+    color: #ad1457;
+    font-size: 1.05em;
+    display: block;
+}
+
+#lista-manutencoes li span {
+    font-size: 0.9em;
+    color: #666;
+}
+
+#lista-manutencoes li.error {
+    background-color: #ffebee;
+    border-left-color: #d32f2f;
+    color: #c62828;
+    font-weight: bold;
 }
